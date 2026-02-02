@@ -10,7 +10,11 @@ module org.example.uvelirkurs {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
-
+    requires java.sql;
+    requires org.json;
     opens org.example.uvelirkurs to javafx.fxml;
+
+    opens org.example.uvelirkurs.controllers to javafx.fxml;
+
     exports org.example.uvelirkurs;
 }
