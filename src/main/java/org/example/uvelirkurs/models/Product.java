@@ -14,4 +14,15 @@ public class Product {
     private int stockQuantity;
     private String collection;
 
+    public Product(int id, String name, String material, double price) {
+        this.id = id;
+        this.name = name;
+        this.material = material;
+        this.price = price;
+    }
+
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public String getMaterial() { return material; }
+    public double getPrice() { return price; }
 }

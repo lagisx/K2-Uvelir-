@@ -97,4 +97,25 @@ public class SupabaseService {
             return false;
         }
     }
+
+    public static JSONArray getProducts() {
+        try {
+            URL url = new URL(SUPABASE_URL + "/rest/v1/products");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("apikey", API_KEY);
+            conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+
+            String response;
+            try (Scanner scanner = new Scanner(conn.getInputStream())) {
+                response = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+            }
+
+            return new JSONArray(response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JSONArray();
+        }
+    }
 }

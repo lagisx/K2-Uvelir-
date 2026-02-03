@@ -10,6 +10,8 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import org.example.uvelirkurs.BDandAPI.SupabaseService;
 
+import java.io.IOException;
+
 public class LoginController {
 
     @FXML private TextField emailField;
@@ -17,7 +19,7 @@ public class LoginController {
     @FXML private TextFlow statusFlow;
 
     @FXML
-    private void handleLogin() {
+    private void handleLogin() throws IOException {
         String email = emailField.getText().trim();
         String password = passwordField.getText();
 
@@ -28,7 +30,11 @@ public class LoginController {
 
         boolean success = SupabaseService.loginUser(email, password);
         if (success) {
-            showStatus("Вход выполнен успешно!");
+            Stage stage = (Stage) emailField.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/org/example/uvelirkurs/mainmenu.fxml")
+            );
+            stage.setScene(new Scene(loader.load()));
         } else {
             showStatus("Неверный email или пароль");
         }
