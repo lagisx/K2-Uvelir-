@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.example.uvelirkurs.controllers.ProductCardController"
-      spacing="8"
+      spacing="10"
       prefWidth="220"
       style="
         -fx-background-color: white;
@@ -16,22 +16,32 @@
         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 0, 4);
       ">
 
-    <Region prefHeight="120"
-            style="-fx-background-color:#e5e7eb; -fx-background-radius:10"/>
+    <!-- Изображение продукта -->
+    <ImageView fx:id="imageView"
+               fitWidth="196"
+               fitHeight="120"
+               preserveRatio="true"
+               smooth="true"
+               style="-fx-background-radius:10; -fx-border-radius:10; -fx-border-color:#ddd; -fx-border-width:1;" />
 
     <Label fx:id="nameLabel"
-           style="-fx-font-weight:bold; -fx-font-size:14"/>
+           wrapText="true"
+           style="-fx-font-weight:bold; -fx-font-size:14; -fx-text-fill:#111;" />
 
     <Label fx:id="materialLabel"
-           style="-fx-text-fill:#555"/>
+           style="-fx-text-fill:#555; -fx-font-size:12;" />
 
     <Label fx:id="priceLabel"
-           style="-fx-font-size:16; -fx-font-weight:bold"/>
+           style="-fx-font-size:16; -fx-font-weight:bold; -fx-text-fill:#1e3a8a;" />
 
     <HBox spacing="8">
-        <Button text="Подробнее" onAction="#onDetails" />
-        <Button text="Купить" maxWidth="Infinity"
-                style="-fx-background-color:#1e3a8a; -fx-text-fill:white"/>
+        <Button text="Подробнее"
+                style="-fx-background-color:transparent; -fx-border-color:#1e3a8a; -fx-text-fill:#1e3a8a; -fx-border-radius:8; -fx-background-radius:8;"
+                onAction="#onDetails"
+                maxWidth="Infinity" />
+        <Button text="Купить"
+                style="-fx-background-color:#1e3a8a; -fx-text-fill:white; -fx-background-radius:8;"
+                maxWidth="Infinity" />
     </HBox>
 
 </VBox>

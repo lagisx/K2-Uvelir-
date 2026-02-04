@@ -1,13 +1,16 @@
 package org.example.uvelirkurs.BDandAPI;
 
+import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import com.google.gson.Gson;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
+import java.util.concurrent.CompletableFuture;
 
 public class SupabaseService {
 
@@ -16,7 +19,6 @@ public class SupabaseService {
 
     public static boolean registerUser(String email, String password, String fullname, String phone) {
         try {
-            // 1. Проверка, есть ли уже такой email
             URL checkUrl = new URL(SUPABASE_URL + "/rest/v1/users?email=eq." + email);
             HttpURLConnection checkConn = (HttpURLConnection) checkUrl.openConnection();
             checkConn.setRequestMethod("GET");
@@ -72,7 +74,6 @@ public class SupabaseService {
         }
     }
 
-    // Получение пользователя по email и паролю
     public static boolean loginUser(String email, String password) {
         try {
             URL url = new URL(SUPABASE_URL + "/rest/v1/users?email=eq." + email);
@@ -118,4 +119,113 @@ public class SupabaseService {
             return new JSONArray();
         }
     }
+
+    private static JSONArray request(String endpoint) {
+        try {
+            URL url = new URL(SUPABASE_URL + "/rest/v1/" + endpoint);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("apikey", API_KEY);
+            conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+
+            String response;
+            try (Scanner scanner = new Scanner(conn.getInputStream())) {
+                response = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+            }
+
+            return new JSONArray(response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JSONArray();
+        }
+    }
+
+
+    public static JSONArray getCategories() {
+        return request("categories");
+    }
+
+    public static JSONArray getProductsByCategory(int categoryId) {
+        return request("products?category_id=eq." + categoryId);
+    }
+
+    public static JSONArray getProductImages(int productId) {
+        return request("product_images?product_id=eq." + productId + "&order=position.asc");
+    }
+
+    public static CompletableFuture<Boolean> updateUser(int userId, String username, String fullname, String email, String phone, String password) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                URL getUrl = new URL(SUPABASE_URL + "/rest/v1/users?id=eq." + userId);
+                HttpURLConnection getConn = (HttpURLConnection) getUrl.openConnection();
+                getConn.setRequestMethod("GET");
+                getConn.setRequestProperty("apikey", API_KEY);
+                getConn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+
+                String response;
+                try (Scanner scanner = new Scanner(getConn.getInputStream())) {
+                    response = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+                }
+
+                JSONArray arr = new JSONArray(response);
+                if (arr.isEmpty()) return false;
+
+                JSONObject userData = arr.getJSONObject(0);
+
+                if (username != null) userData.put("username", username);
+                if (fullname != null) userData.put("fullname", fullname);
+                if (email != null) userData.put("email", email);
+                if (phone != null) userData.put("phone", phone);
+                if (password != null) userData.put("password", password);
+
+                URL putUrl = new URL(SUPABASE_URL + "/rest/v1/users?id=eq." + userId);
+                HttpURLConnection putConn = (HttpURLConnection) putUrl.openConnection();
+                putConn.setRequestMethod("PUT");
+                putConn.setRequestProperty("apikey", API_KEY);
+                putConn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+                putConn.setRequestProperty("Content-Type", "application/json");
+                putConn.setRequestProperty("Prefer", "return=representation");
+                putConn.setDoOutput(true);
+
+                try (OutputStream os = putConn.getOutputStream()) {
+                    os.write(userData.toString().getBytes(StandardCharsets.UTF_8));
+                }
+
+                int code = putConn.getResponseCode();
+                return code >= 200 && code < 300;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        });
+    }
+
+
+    public static JSONObject getCurrentUserByEmail(String email) {
+        try {
+            URL url = new URL(SUPABASE_URL + "/rest/v1/users?email=eq." + email);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("apikey", API_KEY);
+            conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+
+            String response;
+            try (Scanner scanner = new Scanner(conn.getInputStream())) {
+                response = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+            }
+
+            JSONArray arr = new JSONArray(response);
+            if (arr.isEmpty()) return null;
+
+            return arr.getJSONObject(0);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

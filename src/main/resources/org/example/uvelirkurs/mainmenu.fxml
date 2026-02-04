@@ -2,29 +2,39 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<StackPane xmlns:fx="http://javafx.com/fxml"
-           fx:controller="org.example.uvelirkurs.controllers.MainController">
 
-    <BorderPane fx:id="mainBorderPane">
+<StackPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.uvelirkurs.controllers.MainController">
 
-        <!-- Header -->
+    <BorderPane style="-fx-background-color:#f3f4f6;">
+
         <top>
-            <HBox spacing="20" style="-fx-padding:20; -fx-background-color:#1e3a8a;">
-                <Label text="Uvelir Shop" style="-fx-text-fill:white; -fx-font-size:18; -fx-font-weight:bold"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                <TextField promptText="Поиск..." />
-                <Button text="Профиль"/>
-                <Button text="Категории"/>
+            <HBox spacing="15" style="-fx-padding:16; -fx-background-color:linear-gradient(to right,#1e3a8a,#60a5fa);">
+
+                <Label style="-fx-text-fill:white; -fx-font-size:18; -fx-font-weight:bold" text="Uvelir Shop" />
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <TextField prefHeight="25.0" prefWidth="422.0" promptText="Поиск..." />
+                <Button fx:id="profileButton"
+                        text="Профиль"
+                        style="-fx-background-color:#1e3a8a; -fx-text-fill:white;"
+                        prefWidth="100"/>
             </HBox>
         </top>
 
-        <!-- Main content -->
+        <left>
+            <VBox fx:id="categoriesBox" prefWidth="180" spacing="10" style="-fx-padding:15; -fx-background-color:white;">
+
+                <Label style="-fx-font-size:16; -fx-font-weight:bold" text="Категории" />
+
+            </VBox>
+        </left>
+
         <center>
-            <ScrollPane fitToWidth="true">
-                <FlowPane fx:id="productsPane" hgap="15" vgap="15" style="-fx-padding:20"/>
+            <ScrollPane fitToWidth="true" prefWidth="490.0" style="-fx-background-color:transparent;">
+                <FlowPane fx:id="productsPane" hgap="16" style="-fx-padding:20" vgap="16" />
             </ScrollPane>
         </center>
 
     </BorderPane>
 </StackPane>
-

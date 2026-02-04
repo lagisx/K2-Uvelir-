@@ -8,7 +8,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import org.example.uvelirkurs.BDandAPI.SessionManager;
 import org.example.uvelirkurs.BDandAPI.SupabaseService;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -30,15 +32,21 @@ public class LoginController {
 
         boolean success = SupabaseService.loginUser(email, password);
         if (success) {
-            Stage stage = (Stage) emailField.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/org/example/uvelirkurs/mainmenu.fxml")
-            );
-            stage.setScene(new Scene(loader.load()));
+            JSONObject user = SupabaseService.getCurrentUserByEmail(email);
+            if (user != null) {
+                SessionManager.login(user);
+
+                Stage stage = (Stage) emailField.getScene().getWindow();
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/uvelirkurs/mainmenu.fxml"));
+                stage.setScene(new Scene(loader.load()));
+            } else {
+                showStatus("Не удалось получить данные пользователя");
+            }
         } else {
             showStatus("Неверный email или пароль");
         }
     }
+
 
     @FXML
     private void goToRegister() throws Exception {
