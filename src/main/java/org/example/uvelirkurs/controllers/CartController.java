@@ -55,10 +55,10 @@ public class CartController {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/uvelirkurs/cart_item.fxml"));
                 HBox cartItemCard = loader.load();
-                
+
                 CartItemController controller = loader.getController();
                 controller.setCartItem(item);
-                
+
                 cartItemsContainer.getChildren().add(cartItemCard);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -82,27 +82,27 @@ public class CartController {
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/uvelirkurs/checkout_dialog.fxml"));
-            
+
             Stage stage = (Stage) cartItemsContainer.getScene().getWindow();
             Scene scene = new Scene(loader.load());
-            
+
             scene.getRoot().prefWidth(stage.getWidth());
             scene.getRoot().prefHeight(stage.getHeight());
-            
+
             CheckoutDialogController controller = loader.getController();
             controller.setTotalAmount(cartManager.getTotalPrice());
             controller.setCartController(this);
-            
+
             stage.setScene(scene);
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             showAlert("Ошибка", "Не удалось открыть форму оформления заказа");
         }
     }
 
-    public void completeOrder(String shippingAddress, String shippingCity, String shippingPhone, 
-                             String paymentMethod, String notes) {
+    public void completeOrder(String shippingAddress, String shippingCity, String shippingPhone,
+                              String paymentMethod, String notes) {
         javafx.application.Platform.runLater(() -> {
             JSONObject currentUser = org.example.uvelirkurs.BDandAPI.SessionManager.getUser();
             if (currentUser == null) {
@@ -114,8 +114,8 @@ public class CartController {
             double totalAmount = cartManager.getTotalPrice();
 
             int orderId = org.example.uvelirkurs.BDandAPI.SupabaseService.createOrder(
-                userId, totalAmount, shippingAddress, shippingCity, 
-                shippingPhone, paymentMethod, notes
+                    userId, totalAmount, shippingAddress, shippingCity,
+                    shippingPhone, paymentMethod, notes
             );
 
             if (orderId == -1) {
@@ -126,7 +126,7 @@ public class CartController {
             boolean allItemsAdded = true;
             for (CartItem item : cartManager.getCartItems()) {
                 boolean added = org.example.uvelirkurs.BDandAPI.SupabaseService.addOrderItem(
-                    orderId, item.getProductId(), item.getQuantity(), item.getPrice()
+                        orderId, item.getProductId(), item.getQuantity(), item.getPrice()
                 );
                 if (!added) {
                     allItemsAdded = false;
@@ -134,10 +134,10 @@ public class CartController {
             }
 
             if (allItemsAdded) {
-                showAlert("Успех", "Заказ успешно оформлен!\nОбщая сумма: " + 
-                         String.format("%.2f ₽", totalAmount));
+                showAlert("Успех", "Заказ успешно оформлен!\nОбщая сумма: " +
+                        String.format("%.2f ₽", totalAmount));
                 cartManager.clearCart();
-                goBack();
+                goBackSafely();
             } else {
                 showAlert("Предупреждение", "Заказ создан, но некоторые товары не были добавлены.");
             }
@@ -146,7 +146,7 @@ public class CartController {
 
     private void showAlert(String title, String message) {
         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-            javafx.scene.control.Alert.AlertType.INFORMATION
+                javafx.scene.control.Alert.AlertType.INFORMATION
         );
         alert.setTitle(title);
         alert.setHeaderText(null);
@@ -161,15 +161,27 @@ public class CartController {
 
     @FXML
     private void goBack() {
+        goBackSafely();
+    }
+
+    private void goBackSafely() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/uvelirkurs/mainmenu.fxml"));
-            
+            if (cartItemsContainer == null || cartItemsContainer.getScene() == null) {
+                return;
+            }
+
             Stage stage = (Stage) cartItemsContainer.getScene().getWindow();
+
+            if (stage == null) {
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/uvelirkurs/mainmenu.fxml"));
             Scene scene = new Scene(loader.load(), stage.getWidth(), stage.getHeight());
-            
+
             MainController controller = loader.getController();
             controller.setCurrentUser(org.example.uvelirkurs.BDandAPI.SessionManager.getUser());
-            
+
             stage.setScene(scene);
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20" style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.uvelirkurs.controllers.AdminPanelController">
+
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
+
+    <!-- Заголовок с кнопкой выхода -->
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <VBox spacing="5">
+            <Label style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #333333;" text="Панель Администратора" />
+            <Label style="-fx-font-size: 14px; -fx-text-fill: #666666;" text="Полный контроль над системой" />
+        </VBox>
+        <Region HBox.hgrow="ALWAYS" />
+        <Button text="🚪 Выйти из аккаунта" 
+                onAction="#logout"
+                styleClass="danger-button"
+                style="-fx-font-size: 14px; -fx-padding: 10 20;"/>
+    </HBox>
+
+    <!-- Статус и индикатор загрузки -->
+    <HBox alignment="CENTER" spacing="10">
+        <Label fx:id="statusLabel" style="-fx-font-size: 14px;" visible="false" />
+        <ProgressIndicator fx:id="loadingIndicator" prefHeight="30" prefWidth="30" visible="false"/>
+    </HBox>
+
+    <!-- Вкладки -->
+    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS"
+             style="-fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+
+        <!-- Вкладка Пользователи -->
+        <Tab text="👥 Пользователи">
+            <VBox spacing="20" style="-fx-padding: 20; -fx-background-color: white;">
+
+                <!-- Поиск пользователей -->
+                <VBox spacing="10">
+                    <Label text="🔍 Поиск пользователей" 
+                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <TextField fx:id="searchUserField" prefWidth="400" 
+                                   promptText="Поиск по имени, email, телефону..." 
+                                   style="-fx-font-size: 14px; -fx-padding: 10 15;"
+                                   HBox.hgrow="ALWAYS" />
+                        <Button onAction="#searchUsers" styleClass="primary-button" 
+                                text="Найти" style="-fx-font-size: 14px;"/>
+                    </HBox>
+                </VBox>
+
+                <Separator style="-fx-background-color: #e0e0e0;"/>
+
+                <!-- Таблица пользователей -->
+                <VBox VBox.vgrow="ALWAYS" spacing="10">
+                    <Label text="📊 Список пользователей" 
+                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
+                    
+                    <TableView fx:id="usersTable" VBox.vgrow="ALWAYS"
+                               style="-fx-background-radius: 8;">
+                        <columns>
+                            <TableColumn fx:id="userIdColumn" prefWidth="60" text="ID" />
+                            <TableColumn fx:id="usernameColumn" prefWidth="180" text="Имя пользователя" />
+                            <TableColumn fx:id="emailColumn" prefWidth="230" text="Email" />
+                            <TableColumn fx:id="fullnameColumn" prefWidth="200" text="Полное имя" />
+                            <TableColumn fx:id="phoneColumn" prefWidth="150" text="Телефон" />
+                            <TableColumn fx:id="roleColumn" prefWidth="110" text="Роль" />
+                        </columns>
+                        <placeholder>
+                            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 40;">
+                                <Label text="👤" style="-fx-font-size: 48px;"/>
+                                <Label text="Нет пользователей" 
+                                       style="-fx-font-size: 16px; -fx-text-fill: #999999;"/>
+                            </VBox>
+                        </placeholder>
+                    </TableView>
+                </VBox>
+
+                <!-- Подсказка -->
+                <HBox spacing="10" alignment="CENTER_LEFT" 
+                      style="-fx-background-color: #e3f2fd; -fx-padding: 12 15; -fx-background-radius: 8;">
+                    <Label text="💡" style="-fx-font-size: 18px;"/>
+                    <Label style="-fx-font-size: 13px; -fx-text-fill: #1976d2;" 
+                           text="Нажмите правой кнопкой мыши на пользователе для просмотра, редактирования или удаления"
+                           wrapText="true"/>
+                </HBox>
+            </VBox>
+        </Tab>
+
+        <!-- Вкладка Товары -->
+        <Tab text="📦 Товары">
+            <VBox spacing="20" style="-fx-padding: 20; -fx-background-color: white;">
+
+                <!-- Поиск товаров -->
+                <VBox spacing="10">
+                    <Label text="🔍 Поиск товаров" 
+                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <TextField fx:id="searchProductField" prefWidth="400" 
+                                   promptText="Поиск по названию, материалу..." 
+                                   style="-fx-font-size: 14px; -fx-padding: 10 15;"
+                                   HBox.hgrow="ALWAYS" />
+                        <Button onAction="#searchProducts" styleClass="primary-button" 
+                                text="Найти" style="-fx-font-size: 14px;"/>
+                    </HBox>
+                </VBox>
+
+                <Separator style="-fx-background-color: #e0e0e0;"/>
+
+                <!-- Таблица товаров -->
+                <VBox VBox.vgrow="ALWAYS" spacing="10">
+                    <Label text="📊 Каталог товаров" 
+                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
+                    
+                    <TableView fx:id="productsTable" VBox.vgrow="ALWAYS"
+                               style="-fx-background-radius: 8;">
+                        <columns>
+                            <TableColumn fx:id="productIdColumn" prefWidth="60" text="ID" />
+                            <TableColumn fx:id="productNameColumn" prefWidth="320" text="Название" />
+                            <TableColumn fx:id="materialColumn" prefWidth="180" text="Материал" />
+                            <TableColumn fx:id="priceColumn" prefWidth="120" text="Цена (₽)" />
+                            <TableColumn fx:id="stockColumn" prefWidth="110" text="На складе" />
+                        </columns>
+                        <placeholder>
+                            <VBox alignment="CENTER" spacing="10" style="-fx-padding: 40;">
+                                <Label text="📭" style="-fx-font-size: 48px;"/>
+                                <Label text="Нет товаров" 
+                                       style="-fx-font-size: 16px; -fx-text-fill: #999999;"/>
+                            </VBox>
+                        </placeholder>
+                    </TableView>
+                </VBox>
+
+                <!-- Подсказка -->
+                <HBox spacing="10" alignment="CENTER_LEFT" 
+                      style="-fx-background-color: #e3f2fd; -fx-padding: 12 15; -fx-background-radius: 8;">
+                    <Label text="💡" style="-fx-font-size: 18px;"/>
+                    <Label style="-fx-font-size: 13px; -fx-text-fill: #1976d2;" 
+                           text="Нажмите правой кнопкой мыши на товаре для просмотра или удаления"
+                           wrapText="true"/>
+                </HBox>
+            </VBox>
+        </Tab>
+    </TabPane>
+
+    <stylesheets>
+        <String fx:value="@admin-panel-style.css" />
+    </stylesheets>
+</VBox>

@@ -15,11 +15,10 @@ public class CartItem {
         this.name = product.optString("name", "Без имени");
         this.material = product.optString("material", "-");
         this.price = product.optDouble("price", 0);
-        this.imageUrl = ""; // Будет установлено отдельно
+        this.imageUrl = "";
         this.quantity = 1;
     }
 
-    // Getters and Setters
     public int getProductId() { return productId; }
     public String getName() { return name; }
     public String getMaterial() { return material; }

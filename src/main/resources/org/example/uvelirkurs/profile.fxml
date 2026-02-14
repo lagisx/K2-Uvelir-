@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.uvelirkurs.controllers.ProfileController"
@@ -13,6 +14,11 @@
                     onAction="#goBack"
                     styleClass="button-secondary"/>
             <Label text="Профиль" styleClass="label-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="🚪 Выйти из аккаунта" 
+                    onAction="#logout"
+                    styleClass="button-danger"
+                    style="-fx-font-size: 14px;"/>
         </HBox>
     </top>
 
@@ -20,88 +26,112 @@
         <ScrollPane fitToWidth="true" styleClass="scroll-pane">
             <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 30;">
                 
-                <VBox spacing="25" maxWidth="600" styleClass="card">
+                <VBox spacing="25" maxWidth="700" styleClass="card">
 
-                    <VBox alignment="CENTER" spacing="12">
-                        <StackPane style="-fx-background-color: #4a5fd8; -fx-background-radius: 60; -fx-pref-width: 120; -fx-pref-height: 120;">
+                    <!-- Аватар и имя пользователя -->
+                    <VBox alignment="CENTER" spacing="15">
+                        <StackPane style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2); -fx-background-radius: 75; -fx-pref-width: 150; -fx-pref-height: 150; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 5);">
                             <Label fx:id="avatarLabel" 
                                    text="👤" 
-                                   style="-fx-font-size: 64px; -fx-text-fill: white;"/>
+                                   style="-fx-font-size: 72px; -fx-text-fill: white; -fx-font-weight: bold;"/>
                         </StackPane>
                         <Label fx:id="userNameDisplay" 
                                text="Имя пользователя"
-                               styleClass="label-title"/>
+                               styleClass="label-title"
+                               style="-fx-font-size: 28px;"/>
                     </VBox>
 
                     <Separator styleClass="separator-line"/>
 
-                    <GridPane hgap="20" vgap="18">
+                    <!-- Форма редактирования -->
+                    <GridPane hgap="20" vgap="20">
                         
-                        <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                            <Label text="Логин" styleClass="label-subtitle"/>
+                        <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label text="Логин" styleClass="label-subtitle" style="-fx-font-weight: bold;"/>
                             <TextField fx:id="usernameField" 
                                        promptText="Введите логин"
-                                       styleClass="text-field"/>
+                                       styleClass="text-field"
+                                       style="-fx-font-size: 15px;"/>
                         </VBox>
 
-                        <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                            <Label text="Полное имя" styleClass="label-subtitle"/>
+                        <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label text="Полное имя" styleClass="label-subtitle" style="-fx-font-weight: bold;"/>
                             <TextField fx:id="nameField" 
                                        promptText="Введите имя"
-                                       styleClass="text-field"/>
+                                       styleClass="text-field"
+                                       style="-fx-font-size: 15px;"/>
                         </VBox>
 
-                        <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                            <Label text="Email" styleClass="label-subtitle"/>
+                        <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="Email" styleClass="label-subtitle" style="-fx-font-weight: bold;"/>
                             <TextField fx:id="emailField" 
                                        promptText="Введите email"
-                                       styleClass="text-field"/>
+                                       styleClass="text-field"
+                                       style="-fx-font-size: 15px;"/>
                         </VBox>
 
-                        <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                            <Label text="Телефон" styleClass="label-subtitle"/>
+                        <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label text="Телефон" styleClass="label-subtitle" style="-fx-font-weight: bold;"/>
                             <TextField fx:id="phoneField" 
                                        promptText="Введите телефон"
-                                       styleClass="text-field"/>
+                                       styleClass="text-field"
+                                       style="-fx-font-size: 15px;"/>
                         </VBox>
 
-                        <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="2">
-                            <Label text="Новый пароль" styleClass="label-subtitle"/>
+                        <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                            <Label text="Новый пароль" styleClass="label-subtitle" style="-fx-font-weight: bold;"/>
                             <PasswordField fx:id="passwordField" 
-                                          promptText="Оставьте пустым"
-                                          styleClass="text-field"/>
+                                          promptText="Оставьте пустым, если не меняете"
+                                          styleClass="text-field"
+                                          style="-fx-font-size: 15px;"/>
                         </VBox>
 
-                        <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                            <Label text="Текущий пароль *" styleClass="label-subtitle"/>
+                        <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                            <Label text="Текущий пароль *" styleClass="label-subtitle" style="-fx-font-weight: bold; -fx-text-fill: #e74c3c;"/>
                             <PasswordField fx:id="currentPasswordField" 
-                                          promptText="Для подтверждения"
-                                          styleClass="text-field"/>
+                                          promptText="Обязательно для сохранения"
+                                          styleClass="text-field"
+                                          style="-fx-font-size: 15px;"/>
                         </VBox>
                         
                     </GridPane>
 
+                    <!-- Статус -->
                     <Label fx:id="statusLabel" 
                            text="" 
                            wrapText="true"
                            visible="false"
-                           maxWidth="Infinity"/>
+                           alignment="CENTER"
+                           maxWidth="Infinity"
+                           style="-fx-padding: 12; -fx-background-color: #f0f0f0; -fx-background-radius: 8;"/>
 
+                    <!-- Кнопки -->
                     <HBox spacing="15" alignment="CENTER">
-                        <Button text="Сохранить изменения"
+                        <Button text="💾 Сохранить изменения"
                                 onAction="#saveProfile"
                                 styleClass="button-primary"
                                 maxWidth="Infinity"
-                                prefWidth="250"
+                                prefWidth="280"
+                                style="-fx-font-size: 16px; -fx-padding: 14 28;"
                                 HBox.hgrow="ALWAYS"/>
                         <Button text="Отмена"
                                 onAction="#goBack"
                                 styleClass="button-secondary"
-                                prefWidth="120"/>
+                                prefWidth="130"
+                                style="-fx-font-size: 16px;"/>
                     </HBox>
 
-                    <Label text="* Текущий пароль обязателен для сохранения" 
-                           styleClass="label-small"/>
+                    <VBox spacing="10" alignment="CENTER" style="-fx-padding: 15 0 0 0;">
+                        <Label text="💡 Требования безопасности" 
+                               styleClass="label-subtitle"
+                               style="-fx-font-weight: bold;"/>
+                        <Label text="• Для сохранения любых изменений требуется ввод текущего пароля" 
+                               styleClass="label-small"
+                               wrapText="true"/>
+                        <Label text="• Новый пароль вводите только если хотите его изменить" 
+                               styleClass="label-small"
+                               wrapText="true"/>
+                    </VBox>
 
                 </VBox>
 

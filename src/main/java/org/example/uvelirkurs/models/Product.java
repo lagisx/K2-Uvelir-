@@ -14,7 +14,7 @@ public class Product {
     private int stockQuantity;
     private String collection;
 
-    public Product(int id, String name, String material, double price) {
+    public Product(int id, String name, String material, double price, int stockQuantity) {
         this.id = id;
         this.name = name;
         this.material = material;
@@ -25,4 +25,5 @@ public class Product {
     public String getName() { return name; }
     public String getMaterial() { return material; }
     public double getPrice() { return price; }
+    public int getStockQuantity() { return stockQuantity; }
 }

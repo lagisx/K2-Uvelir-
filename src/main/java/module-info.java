@@ -14,9 +14,13 @@ module org.example.uvelirkurs {
     requires org.json;
     requires com.google.gson;
     requires okhttp3;
-    opens org.example.uvelirkurs to javafx.fxml;
+    requires javafx.graphics;
+    opens org.example.uvelirkurs.models to javafx.base;
 
     opens org.example.uvelirkurs.controllers to javafx.fxml;
+
+
+    opens org.example.uvelirkurs to javafx.fxml;
 
     exports org.example.uvelirkurs;
     opens org.example.uvelirkurs.BDandAPI to javafx.fxml;

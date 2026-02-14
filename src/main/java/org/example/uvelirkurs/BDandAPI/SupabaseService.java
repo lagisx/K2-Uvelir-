@@ -4,6 +4,7 @@ import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -15,6 +16,8 @@ public class SupabaseService {
 
     private static final String SUPABASE_URL = "https://ainxqbtyeqiwsmtgjfud.supabase.co";
     private static final String API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpbnhxYnR5ZXFpd3NtdGdqZnVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwNDc1NzgsImV4cCI6MjA4NTYyMzU3OH0.bfWoSDHGR_nDPqzhoJsYUWjiqGO25GH_JHGcKhmomNE";
+
+    private static final OkHttpClient client = new OkHttpClient();
 
     public static boolean registerUser(String email, String password, String fullname, String phone) {
         try {
@@ -29,7 +32,6 @@ public class SupabaseService {
                 checkResp = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
             }
             if (!checkResp.equals("[]")) {
-                System.out.println("Пользователь с таким email уже существует");
                 return false;
             }
 
@@ -58,14 +60,8 @@ public class SupabaseService {
             int code = conn.getResponseCode();
             if (code >= 200 && code < 300) {
                 return true;
-            } else {
-                String response;
-                try (Scanner scanner = new Scanner(conn.getErrorStream())) {
-                    response = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
-                }
-                System.out.println("Ошибка записи в Supabase: " + response);
-                return false;
             }
+                return false;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -197,29 +193,45 @@ public class SupabaseService {
                 JSONArray arr = new JSONArray(response);
                 if (arr.isEmpty()) return false;
 
-                JSONObject userData = arr.getJSONObject(0);
+                JSONObject currentUser = arr.getJSONObject(0);
 
-                if (username != null) userData.put("username", username);
-                if (fullname != null) userData.put("fullname", fullname);
-                if (email != null) userData.put("email", email);
-                if (phone != null) userData.put("phone", phone);
-                if (password != null) userData.put("password", password);
-
-                URL putUrl = new URL(SUPABASE_URL + "/rest/v1/users?id=eq." + userId);
-                HttpURLConnection putConn = (HttpURLConnection) putUrl.openConnection();
-                putConn.setRequestMethod("PUT");
-                putConn.setRequestProperty("apikey", API_KEY);
-                putConn.setRequestProperty("Authorization", "Bearer " + API_KEY);
-                putConn.setRequestProperty("Content-Type", "application/json");
-                putConn.setRequestProperty("Prefer", "return=representation");
-                putConn.setDoOutput(true);
-
-                try (OutputStream os = putConn.getOutputStream()) {
-                    os.write(userData.toString().getBytes(StandardCharsets.UTF_8));
+                JSONObject updateData = new JSONObject();
+                if (username != null && !username.equals(currentUser.optString("username"))) {
+                    updateData.put("username", username);
+                }
+                if (fullname != null && !fullname.equals(currentUser.optString("fullname"))) {
+                    updateData.put("fullname", fullname);
+                }
+                if (email != null && !email.equals(currentUser.optString("email"))) {
+                    updateData.put("email", email);
+                }
+                if (phone != null && !phone.equals(currentUser.optString("phone"))) {
+                    updateData.put("phone", phone);
+                }
+                if (password != null) {
+                    updateData.put("password", password);
                 }
 
-                int code = putConn.getResponseCode();
-                return code >= 200 && code < 300;
+                if (updateData.isEmpty()) {
+                    return true;
+                }
+
+                RequestBody body = RequestBody.create(
+                        updateData.toString(),
+                        MediaType.parse("application/json")
+                );
+
+                Request patchRequest = new Request.Builder()
+                        .url(SUPABASE_URL + "/rest/v1/users?id=eq." + userId)
+                        .patch(body)
+                        .addHeader("apikey", API_KEY)
+                        .addHeader("Authorization", "Bearer " + API_KEY)
+                        .addHeader("Content-Type", "application/json")
+                        .build();
+
+                try (Response patchResponse = client.newCall(patchRequest).execute()) {
+                    return patchResponse.isSuccessful();
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -242,9 +254,10 @@ public class SupabaseService {
             }
 
             JSONArray arr = new JSONArray(response);
-            if (arr.isEmpty()) return null;
-
-            return arr.getJSONObject(0);
+            if (!arr.isEmpty()) {
+                return arr.getJSONObject(0);
+            }
+            return null;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -266,28 +279,31 @@ public class SupabaseService {
                     checkResp = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
                 }
 
-                JSONArray existing = new JSONArray(checkResp);
-                
-                if (!existing.isEmpty()) {
-                    int cartItemId = existing.getJSONObject(0).getInt("id");
-                    URL updateUrl = new URL(SUPABASE_URL + "/rest/v1/cart_items?id=eq." + cartItemId);
-                    HttpURLConnection updateConn = (HttpURLConnection) updateUrl.openConnection();
-                    updateConn.setRequestMethod("PATCH");
-                    updateConn.setRequestProperty("apikey", API_KEY);
-                    updateConn.setRequestProperty("Authorization", "Bearer " + API_KEY);
-                    updateConn.setRequestProperty("Content-Type", "application/json");
-                    updateConn.setRequestProperty("Prefer", "return=minimal");
-                    updateConn.setDoOutput(true);
+                JSONArray existingItems = new JSONArray(checkResp);
 
+                if (!existingItems.isEmpty()) {
                     JSONObject updateData = new JSONObject();
                     updateData.put("quantity", quantity);
-
-                    try (OutputStream os = updateConn.getOutputStream()) {
-                        os.write(updateData.toString().getBytes(StandardCharsets.UTF_8));
+                    if (imageUrl != null && !imageUrl.isEmpty()) {
+                        updateData.put("image_url", imageUrl);
                     }
 
-                    int code = updateConn.getResponseCode();
-                    return code >= 200 && code < 300;
+                    RequestBody body = RequestBody.create(
+                            updateData.toString(),
+                            MediaType.parse("application/json")
+                    );
+
+                    Request patchRequest = new Request.Builder()
+                            .url(SUPABASE_URL + "/rest/v1/cart_items?user_id=eq." + userId + "&product_id=eq." + productId)
+                            .patch(body)
+                            .addHeader("apikey", API_KEY)
+                            .addHeader("Authorization", "Bearer " + API_KEY)
+                            .addHeader("Content-Type", "application/json")
+                            .build();
+
+                    try (Response patchResponse = client.newCall(patchRequest).execute()) {
+                        return patchResponse.isSuccessful();
+                    }
                 } else {
                     URL url = new URL(SUPABASE_URL + "/rest/v1/cart_items");
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -412,7 +428,6 @@ public class SupabaseService {
                 try (Scanner scanner = new Scanner(conn.getErrorStream())) {
                     errorResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
                 }
-                System.out.println("Ошибка создания заказа: " + errorResponse);
             }
 
             return -1;

@@ -22,6 +22,7 @@ public class CartItemController {
 
     private CartItem cartItem;
     private CartManager cartManager;
+    private boolean imageLoaded = false;
 
     public void setCartItem(CartItem item) {
         this.cartItem = item;
@@ -38,20 +39,23 @@ public class CartItemController {
         quantityLabel.setText(String.valueOf(cartItem.getQuantity()));
         totalPriceLabel.setText(String.format("%.2f ₽", cartItem.getTotalPrice()));
 
-        if (cartItem.getImageUrl() != null && !cartItem.getImageUrl().isEmpty()) {
+        if (!imageLoaded && cartItem.getImageUrl() != null && !cartItem.getImageUrl().isEmpty()) {
             try {
                 Image image = new Image(cartItem.getImageUrl(), true);
                 productImage.setImage(image);
                 productImage.setFitWidth(100);
                 productImage.setFitHeight(100);
                 productImage.setPreserveRatio(true);
+                imageLoaded = true;
             } catch (Exception e) {
                 productImage.setFitWidth(100);
                 productImage.setFitHeight(100);
+                imageLoaded = true;
             }
-        } else {
+        } else if (!imageLoaded) {
             productImage.setFitWidth(100);
             productImage.setFitHeight(100);
+            imageLoaded = true;
         }
     }
 
@@ -59,7 +63,8 @@ public class CartItemController {
     private void increaseQuantity() {
         if (cartItem != null) {
             cartManager.updateQuantity(cartItem.getProductId(), cartItem.getQuantity() + 1);
-            updateUI();
+            quantityLabel.setText(String.valueOf(cartItem.getQuantity()));
+            totalPriceLabel.setText(String.format("%.2f ₽", cartItem.getTotalPrice()));
         }
     }
 
@@ -67,7 +72,8 @@ public class CartItemController {
     private void decreaseQuantity() {
         if (cartItem != null && cartItem.getQuantity() > 1) {
             cartManager.updateQuantity(cartItem.getProductId(), cartItem.getQuantity() - 1);
-            updateUI();
+            quantityLabel.setText(String.valueOf(cartItem.getQuantity()));
+            totalPriceLabel.setText(String.format("%.2f ₽", cartItem.getTotalPrice()));
         }
     }
 

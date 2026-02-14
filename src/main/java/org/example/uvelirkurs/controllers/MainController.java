@@ -189,7 +189,6 @@ public class MainController {
     public void openProfile() {
         JSONObject user = SessionManager.getUser();
         if (user == null) {
-            System.out.println("Ошибка: пользователь не авторизован!");
             return;
         }
 

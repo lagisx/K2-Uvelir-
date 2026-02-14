@@ -7,7 +7,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
+import org.example.uvelirkurs.BDandAPI.CartManager;
 import org.example.uvelirkurs.BDandAPI.SessionManager;
 import org.example.uvelirkurs.BDandAPI.SupabaseService;
 import org.json.JSONObject;
@@ -90,6 +93,9 @@ public class ProfileController {
                         if (userNameDisplay != null) {
                             userNameDisplay.setText(displayName);
                         }
+                        if (avatarLabel != null && !displayName.isEmpty()) {
+                            avatarLabel.setText(displayName.substring(0, 1).toUpperCase());
+                        }
                     } else {
                         showStatus("Ошибка при обновлении профиля", "error");
                     }
@@ -99,6 +105,33 @@ public class ProfileController {
                     ex.printStackTrace();
                     return null;
                 });
+    }
+
+    @FXML
+    private void logout() {
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Выход из аккаунта");
+        confirmAlert.setHeaderText("Вы уверены?");
+        confirmAlert.setContentText("Вы действительно хотите выйти из аккаунта?");
+
+        confirmAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                CartManager.getInstance().clearCart();
+
+                SessionManager.logout();
+
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/uvelirkurs/login.fxml"));
+                    Stage stage = (Stage) usernameField.getScene().getWindow();
+                    Scene scene = new Scene(loader.load());
+                    stage.setMaximized(true);
+                    stage.setScene(scene);
+                    stage.setTitle("Uvelir Shop - Вход");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @FXML
@@ -123,5 +156,13 @@ public class ProfileController {
     private void showStatus(String text, String type) {
         statusLabel.setText(text);
         statusLabel.setVisible(true);
+        
+        if ("success".equals(type)) {
+            statusLabel.setStyle("-fx-text-fill: #27ae60; -fx-font-size: 14px; -fx-font-weight: bold;");
+        } else if ("error".equals(type)) {
+            statusLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-size: 14px; -fx-font-weight: bold;");
+        } else {
+            statusLabel.setStyle("-fx-text-fill: #f39c12; -fx-font-size: 14px; -fx-font-weight: bold;");
+        }
     }
 }

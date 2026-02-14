@@ -1,36 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.example.uvelirkurs.controllers.OrderCardController"
-      spacing="16"
       styleClass="order-card"
+      spacing="15"
       stylesheets="@styles.css">
+    
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
 
-    <HBox spacing="20" alignment="CENTER_LEFT">
-        <VBox spacing="5">
-            <Label fx:id="orderNumberLabel" 
-                   text="Заказ #..."
-                   styleClass="order-number"/>
-            <Label fx:id="dateLabel" 
-                   text="Дата"
-                   styleClass="order-date"/>
-        </VBox>
-
+    <!-- Заголовок заказа -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Label fx:id="orderNumberLabel" 
+               text="Заказ #0000"
+               styleClass="order-number"/>
         <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="dateLabel" 
+               text="01.01.2024"
+               styleClass="order-date"/>
     </HBox>
 
-    <Region prefHeight="1" styleClass="separator-line"/>
+    <Separator styleClass="separator-line"/>
 
-    <VBox fx:id="detailsContainer" spacing="12"/>
+    <!-- Детали заказа -->
+    <VBox fx:id="detailsContainer" spacing="10">
+        <!-- Детали будут добавлены программно -->
+    </VBox>
 
-    <HBox spacing="20" alignment="CENTER" style="-fx-padding: 10 0 0 0; -fx-border-color: #e0e0e0; -fx-border-width: 1 0 0 0;">
-        <Label text="Итого:" styleClass="label-subtitle"/>
+    <Separator styleClass="separator-line"/>
+
+    <!-- Секция товаров в заказе -->
+    <VBox spacing="10">
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label text="📦" style="-fx-font-size: 18px;"/>
+            <Label text="Товары в заказе" 
+                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
+        </HBox>
+        
+        <VBox fx:id="orderItemsContainer" 
+              spacing="10"
+              style="-fx-background-color: white; -fx-padding: 10; -fx-background-radius: 8;">
+            <!-- Товары будут добавлены программно -->
+            <Label text="Загрузка товаров..." 
+                   style="-fx-text-fill: #999999; -fx-font-size: 13px;"/>
+        </VBox>
+    </VBox>
+
+    <Separator styleClass="separator-line"/>
+
+    <!-- Итоговая сумма -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Label text="Итого:" 
+               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
         <Region HBox.hgrow="ALWAYS"/>
         <Label fx:id="totalAmountLabel" 
                text="0.00 ₽"
-               styleClass="total-price"/>
+               style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #4a5fd8;"/>
     </HBox>
 
 </VBox>

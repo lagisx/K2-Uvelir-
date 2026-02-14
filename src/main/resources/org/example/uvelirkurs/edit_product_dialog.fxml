@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            prefWidth="600" prefHeight="700">
+    
+    <headerText>Редактирование товара</headerText>
+    
+    <content>
+        <ScrollPane fitToWidth="true" prefHeight="600">
+            <VBox spacing="20" style="-fx-padding: 20;">
+                
+                <!-- ID товара -->
+                <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: #e8f5e9; -fx-padding: 10; -fx-background-radius: 8;">
+                    <Label text="🏷" style="-fx-font-size: 18px;"/>
+                    <Label fx:id="productIdLabel" text="Товар #0" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #2e7d32;"/>
+                </HBox>
+                
+                <!-- Основная информация -->
+                <VBox spacing="12" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-border-width: 1;">
+                    <Label text="📝 Основная информация" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
+                    <Separator/>
+                    
+                    <VBox spacing="6">
+                        <Label text="Название товара *" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="nameField" style="-fx-font-size: 14px;"/>
+                    </VBox>
+                    
+                    <HBox spacing="15">
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label text="Категория *" style="-fx-font-weight: bold;"/>
+                            <ComboBox fx:id="categoryCombo" maxWidth="Infinity"/>
+                        </VBox>
+                        
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label text="Поставщик *" style="-fx-font-weight: bold;"/>
+                            <ComboBox fx:id="supplierCombo" maxWidth="Infinity"/>
+                        </VBox>
+                    </HBox>
+                    
+                    <VBox spacing="6">
+                        <Label text="Описание" style="-fx-font-weight: bold;"/>
+                        <TextArea fx:id="descriptionArea" 
+                                 prefRowCount="4"
+                                 wrapText="true"
+                                 style="-fx-font-size: 13px;"/>
+                    </VBox>
+                </VBox>
+                
+                <!-- Характеристики -->
+                <VBox spacing="12" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-border-width: 1;">
+                    <Label text="💎 Характеристики" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
+                    <Separator/>
+                    
+                    <HBox spacing="15">
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label text="Материал *" style="-fx-font-weight: bold;"/>
+                            <TextField fx:id="materialField" style="-fx-font-size: 14px;"/>
+                        </VBox>
+                        
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label text="Проба" style="-fx-font-weight: bold;"/>
+                            <TextField fx:id="purityField" style="-fx-font-size: 14px;"/>
+                        </VBox>
+                    </HBox>
+                    
+                    <HBox spacing="15">
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label text="Вес (граммы)" style="-fx-font-weight: bold;"/>
+                            <TextField fx:id="weightField" style="-fx-font-size: 14px;"/>
+                        </VBox>
+                        
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label text="Размер" style="-fx-font-weight: bold;"/>
+                            <TextField fx:id="sizeField" style="-fx-font-size: 14px;"/>
+                        </VBox>
+                    </HBox>
+                    
+                    <VBox spacing="6">
+                        <Label text="Коллекция" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="collectionField" style="-fx-font-size: 14px;"/>
+                    </VBox>
+                </VBox>
+                
+                <!-- Цены и остаток -->
+                <VBox spacing="12" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-border-width: 1;">
+                    <Label text="💰 Цены и количество" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
+                    <Separator/>
+                    
+                    <HBox spacing="15">
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label text="Цена продажи (₽) *" style="-fx-font-weight: bold;"/>
+                            <TextField fx:id="priceField" style="-fx-font-size: 14px;"/>
+                        </VBox>
+                        
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label text="Себестоимость (₽)" style="-fx-font-weight: bold;"/>
+                            <TextField fx:id="costPriceField" style="-fx-font-size: 14px;"/>
+                        </VBox>
+                    </HBox>
+                    
+                    <VBox spacing="6">
+                        <Label text="Количество на складе *" style="-fx-font-weight: bold;"/>
+                        <TextField fx:id="stockField" style="-fx-font-size: 14px;"/>
+                    </VBox>
+                </VBox>
+                
+                <!-- Информация -->
+                <HBox spacing="10" style="-fx-background-color: #e3f2fd; -fx-padding: 12; -fx-background-radius: 8;">
+                    <Label text="ℹ️" style="-fx-font-size: 18px;"/>
+                    <VBox spacing="5">
+                        <Label text="Совет:" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #1565c0;"/>
+                        <Label text="• Изображения товара можно управлять через контекстное меню в таблице" 
+                               wrapText="true"
+                               style="-fx-font-size: 12px; -fx-text-fill: #1976d2;"/>
+                        <Label text="• Используйте точку для десятичных чисел (например: 3.5)" 
+                               wrapText="true"
+                               style="-fx-font-size: 12px; -fx-text-fill: #1976d2;"/>
+                    </VBox>
+                </HBox>
+                
+            </VBox>
+        </ScrollPane>
+    </content>
+    
+    <buttonTypes>
+        <ButtonType fx:id="saveButtonType" text="Сохранить" buttonData="OK_DONE"/>
+        <ButtonType text="Отмена" buttonData="CANCEL_CLOSE"/>
+    </buttonTypes>
+    
+</DialogPane>

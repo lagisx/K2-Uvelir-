@@ -60,16 +60,21 @@ public class RegisterController {
     private void goToLogin() throws Exception {
         Stage stage = (Stage) emailField.getScene().getWindow();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/uvelirkurs/login.fxml"));
-        stage.setScene(new Scene(loader.load()));
+        Scene scene = new Scene(loader.load());
+
+        stage.setMaximized(true);
+        stage.setScene(scene);
     }
 
     private void showError(String message) {
         errorLabel.setText(message);
         errorLabel.setVisible(true);
+        errorLabel.setStyle("-fx-text-fill: #e74c3c;");
     }
 
     private void showSuccess(String message) {
         errorLabel.setText(message);
         errorLabel.setVisible(true);
+        errorLabel.setStyle("-fx-text-fill: #27ae60;");
     }
 }

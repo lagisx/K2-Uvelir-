@@ -35,15 +35,17 @@ public class LoginController {
             if (user != null) {
                 SessionManager.login(user);
 
+                String role = user.optString("role", "CLIENT");
+
                 Stage stage = (Stage) emailField.getScene().getWindow();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/uvelirkurs/mainmenu.fxml"));
-                Scene scene = new Scene(loader.load());
 
-                MainController mainController = loader.getController();
-                mainController.setCurrentUser(user);
-
-                stage.setScene(scene);
-                stage.setTitle("Uvelir Shop - Магазин");
+                if ("ADMIN".equals(role)) {
+                    openAdminPanel(stage);
+                } else if ("MANAGER".equals(role)) {
+                    openManagerPanel(stage);
+                } else {
+                    openMainMenu(stage, user);
+                }
             } else {
                 showError("Не удалось получить данные пользователя");
             }
@@ -52,11 +54,46 @@ public class LoginController {
         }
     }
 
+
+    private void openAdminPanel(Stage stage) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/uvelirkurs/admin_panel.fxml"));
+        Scene scene = new Scene(loader.load());
+
+        stage.setMaximized(true);
+        stage.setScene(scene);
+        stage.setTitle("Uvelir Shop - Панель Администратора");
+    }
+
+
+    private void openManagerPanel(Stage stage) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/uvelirkurs/manager_panel.fxml"));
+        Scene scene = new Scene(loader.load());
+
+        stage.setMaximized(true);
+        stage.setScene(scene);
+        stage.setTitle("Uvelir Shop - Панель Менеджера");
+    }
+
+
+    private void openMainMenu(Stage stage, JSONObject user) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/uvelirkurs/mainmenu.fxml"));
+        Scene scene = new Scene(loader.load());
+
+        MainController mainController = loader.getController();
+        mainController.setCurrentUser(user);
+
+        stage.setScene(scene);
+        stage.setTitle("Uvelir Shop - Магазин");
+    }
+
     @FXML
     private void goToRegister() throws Exception {
         Stage stage = (Stage) emailField.getScene().getWindow();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/uvelirkurs/register.fxml"));
-        stage.setScene(new Scene(loader.load()));
+        Scene scene = new Scene(loader.load());
+
+        stage.setMaximized(true);
+        stage.setScene(scene);
     }
 
     private void showError(String message) {

@@ -1,45 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.image.ImageView?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="org.example.uvelirkurs.controllers.ProductCardController"
-      spacing="10"
-      prefWidth="220"
-      styleClass="product-card"
-      stylesheets="@styles.css">
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-    <ImageView fx:id="imageView"
-               fitWidth="196"
-               fitHeight="120"
-               preserveRatio="true"
-               smooth="true"
-               style="-fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e0e0e0; -fx-border-width: 1;"/>
+<VBox prefWidth="220" spacing="10" styleClass="product-card" stylesheets="@styles.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="org.example.uvelirkurs.controllers.ProductCardController">
 
-    <Label fx:id="nameLabel"
-           wrapText="true"
-           styleClass="product-name"/>
+    <ImageView fx:id="imageView" fitHeight="120" fitWidth="196" preserveRatio="true" smooth="true" style="-fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e0e0e0; -fx-border-width: 1;" />
 
-    <Label fx:id="materialLabel"
-           styleClass="label-small"/>
+    <Label fx:id="nameLabel" styleClass="product-name" wrapText="true" />
 
-    <Label fx:id="priceLabel"
-           styleClass="product-price"/>
+    <Label fx:id="materialLabel" styleClass="label-small" />
+
+    <Label fx:id="priceLabel" styleClass="product-price" />
 
     <HBox spacing="8">
-        <Button text="Подробнее"
-                styleClass="button-secondary"
-                onAction="#onDetails"
-                maxWidth="Infinity"
-                HBox.hgrow="ALWAYS"/>
-        <Button text="🛒"
-                styleClass="button-primary"
-                onAction="#addToCart"
-                maxWidth="Infinity"
-                HBox.hgrow="ALWAYS"/>
+        <Button maxWidth="Infinity" onAction="#onDetails" prefHeight="42.0" prefWidth="140.0" styleClass="button-secondary" text="Открыть" HBox.hgrow="ALWAYS">
+         <font>
+            <Font size="10.0" />
+         </font></Button>
+        <Button maxWidth="Infinity" onAction="#addToCart" prefHeight="42.0" prefWidth="87.0" styleClass="button-primary" text="🛒" HBox.hgrow="ALWAYS" />
     </HBox>
 
 </VBox>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+
+<DialogPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.uvelirkurs.controllers.AddImagesDialogController"
+            prefWidth="750" prefHeight="700">
+
+    <headerText>Добавление изображений товара</headerText>
+
+    <content>
+        <VBox spacing="20" style="-fx-padding: 20;">
+
+            <!-- Информация о товаре -->
+            <HBox spacing="10" alignment="CENTER_LEFT"
+                  style="-fx-background-color: #e8f5e9; -fx-padding: 12; -fx-background-radius: 8;">
+                <Label text="📦" style="-fx-font-size: 20px;"/>
+                <VBox spacing="3">
+                    <Label fx:id="productNameLabel"
+                           text="Товар"
+                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2e7d32;"/>
+                    <Label fx:id="productIdLabel"
+                           text="ID: #0"
+                           style="-fx-font-size: 12px; -fx-text-fill: #66bb6a;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Drag and Drop зона -->
+            <VBox fx:id="dropZone"
+                  alignment="CENTER"
+                  spacing="15"
+                  style="-fx-border-color: #4a5fd8; -fx-border-width: 3; -fx-border-style: dashed; -fx-border-radius: 12; -fx-background-color: #f0f4ff; -fx-background-radius: 12; -fx-padding: 40; -fx-cursor: hand;">
+
+                <Label text="🖼️" style="-fx-font-size: 64px;"/>
+
+                <Label text="Перетащите изображения сюда"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #4a5fd8;"/>
+
+                <Label text="или"
+                       style="-fx-font-size: 14px; -fx-text-fill: #666666;"/>
+
+                <Button fx:id="browseButton"
+                        text="📁 Выбрать файлы"
+                        style="-fx-background-color: #4a5fd8; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 12 30; -fx-background-radius: 8; -fx-cursor: hand;"/>
+
+                <Label text="Поддерживаются: JPG, PNG, WEBP, GIF (макс. 5MB)"
+                       style="-fx-font-size: 12px; -fx-text-fill: #999999;"/>
+            </VBox>
+
+            <!-- Превью выбранных изображений -->
+            <VBox spacing="10">
+                <Label text="🖼️ Превью изображений:"
+                       style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
+
+                <ScrollPane fitToWidth="true"
+                            prefHeight="180"
+                            style="-fx-background-color: transparent; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 8;">
+                    <FlowPane fx:id="imagePreviewContainer"
+                              hgap="10" vgap="10"
+                              style="-fx-padding: 10; -fx-background-color: white;">
+                        <Label fx:id="emptyPreviewLabel"
+                               text="Изображения не выбраны"
+                               style="-fx-text-fill: #999999; -fx-font-style: italic;"/>
+                    </FlowPane>
+                </ScrollPane>
+            </VBox>
+
+            <!-- Список выбранных файлов -->
+            <VBox spacing="10">
+                <Label text="📋 Выбранные файлы:"
+                       style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
+
+                <ScrollPane fitToWidth="true"
+                            prefHeight="150"
+                            style="-fx-background-color: transparent; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 8;">
+                    <VBox fx:id="filesListContainer"
+                          spacing="8"
+                          style="-fx-padding: 10; -fx-background-color: white;">
+                        <Label fx:id="emptyFilesLabel"
+                               text="Файлы не выбраны"
+                               style="-fx-text-fill: #999999; -fx-font-style: italic;"/>
+                    </VBox>
+                </ScrollPane>
+            </VBox>
+
+            <!-- Прогресс загрузки -->
+            <VBox fx:id="progressContainer"
+                  spacing="10"
+                  visible="false"
+                  style="-fx-background-color: #fff3cd; -fx-padding: 15; -fx-background-radius: 8;">
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <ProgressIndicator fx:id="uploadProgress" prefWidth="30" prefHeight="30"/>
+                    <Label fx:id="progressLabel"
+                           text="Загрузка изображений..."
+                           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #856404;"/>
+                </HBox>
+                <ProgressBar fx:id="uploadProgressBar"
+                             prefWidth="Infinity"
+                             progress="0"/>
+            </VBox>
+
+        </VBox>
+    </content>
+
+    <buttonTypes>
+        <ButtonType text="Загрузить" buttonData="OK_DONE"/>
+        <ButtonType text="Отмена" buttonData="CANCEL_CLOSE"/>
+    </buttonTypes>
+
+</DialogPane>

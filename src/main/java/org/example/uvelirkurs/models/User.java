@@ -24,6 +24,9 @@ public class User {
         this.role = role;
     }
 
+    public User(int id, String username, String email, String fullname, String phone, String s) {
+    }
+
     public int getId() {
         return id;
     }
