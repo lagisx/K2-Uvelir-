@@ -1,0 +1,212 @@
+.root {
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.main-background {
+    -fx-background-color: #f5f5f5;
+}
+
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+    -fx-padding: 20;
+}
+
+.button-primary {
+    -fx-background-color: #4a5fd8;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 12 24;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.button-primary:hover {
+    -fx-background-color: #3d4fb5;
+}
+
+.button-secondary {
+    -fx-background-color: #e0e0e0;
+    -fx-text-fill: #333333;
+    -fx-background-radius: 8;
+    -fx-padding: 12 24;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.button-secondary:hover {
+    -fx-background-color: #d0d0d0;
+}
+
+.button-danger {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 10 20;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+
+.button-danger:hover {
+    -fx-background-color: #c0392b;
+}
+
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 10 15;
+    -fx-font-size: 14px;
+}
+
+.text-field:focused {
+    -fx-border-color: #4a5fd8;
+}
+
+.label-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.label-subtitle {
+    -fx-font-size: 16px;
+    -fx-text-fill: #666666;
+}
+
+.label-small {
+    -fx-font-size: 12px;
+    -fx-text-fill: #999999;
+}
+
+.category-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #666666;
+    -fx-padding: 10 15;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-font-size: 14px;
+}
+
+.category-button:hover {
+    -fx-background-color: #f0f0f0;
+}
+
+.category-button-selected {
+    -fx-background-color: #4a5fd8;
+    -fx-text-fill: white;
+    -fx-padding: 10 15;
+    -fx-background-radius: 6;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.product-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);
+    -fx-padding: 15;
+}
+
+.product-name {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.product-price {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4a5fd8;
+}
+
+.cart-item {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-padding: 15;
+}
+
+.quantity-box {
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 6;
+    -fx-padding: 5 10;
+}
+
+.quantity-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #666666;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.quantity-button:hover {
+    -fx-text-fill: #4a5fd8;
+}
+
+.top-bar {
+    -fx-background-color: white;
+    -fx-padding: 15 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 1);
+}
+
+.separator-line {
+    -fx-background-color: #e0e0e0;
+    -fx-pref-height: 1;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.empty-state {
+    -fx-text-fill: #999999;
+    -fx-font-size: 16px;
+}
+
+.success-text {
+    -fx-text-fill: #27ae60;
+    -fx-font-size: 14px;
+}
+
+.error-text {
+    -fx-text-fill: #e74c3c;
+    -fx-font-size: 14px;
+}
+
+.total-price {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4a5fd8;
+}
+
+.order-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-padding: 20;
+}
+
+.order-number {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.order-date {
+    -fx-font-size: 13px;
+    -fx-text-fill: #999999;
+}

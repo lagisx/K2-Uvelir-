@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+
+<HBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.uvelirkurs.controllers.CartItemController"
+      spacing="20"
+      alignment="CENTER_LEFT"
+      styleClass="cart-item"
+      stylesheets="@styles.css">
+
+    <ImageView fx:id="productImage"
+               fitWidth="100"
+               fitHeight="100"
+               preserveRatio="true"/>
+
+    <VBox spacing="8" HBox.hgrow="ALWAYS">
+        <Label fx:id="nameLabel" styleClass="product-name"/>
+        <Label fx:id="materialLabel" styleClass="label-small"/>
+        <Label fx:id="priceLabel" styleClass="product-price"/>
+    </VBox>
+
+    <HBox fx:id="quantityBox" spacing="12" alignment="CENTER" styleClass="quantity-box">
+        <Button fx:id="decreaseBtn"
+                text="−"
+                onAction="#decreaseQuantity"
+                styleClass="quantity-button"/>
+        <Label fx:id="quantityLabel" 
+               text="1"
+               style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-min-width: 30; -fx-alignment: center;"/>
+        <Button fx:id="increaseBtn"
+                text="+"
+                onAction="#increaseQuantity"
+                styleClass="quantity-button"/>
+    </HBox>
+
+    <Label fx:id="totalPriceLabel" 
+           text="0.00 ₽"
+           styleClass="product-price"
+           style="-fx-min-width: 120; -fx-alignment: center-right;"/>
+
+    <Button fx:id="removeBtn"
+            text="✕"
+            onAction="#removeItem"
+            styleClass="button-danger"
+            style="-fx-background-color: transparent; -fx-text-fill: #e74c3c;"/>
+
+</HBox>

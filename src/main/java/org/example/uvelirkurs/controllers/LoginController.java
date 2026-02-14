@@ -5,8 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import org.example.uvelirkurs.BDandAPI.SessionManager;
 import org.example.uvelirkurs.BDandAPI.SupabaseService;
@@ -18,7 +17,7 @@ public class LoginController {
 
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
-    @FXML private TextFlow statusFlow;
+    @FXML private Label errorLabel;
 
     @FXML
     private void handleLogin() throws IOException {
@@ -26,7 +25,7 @@ public class LoginController {
         String password = passwordField.getText();
 
         if (email.isEmpty() || password.isEmpty()) {
-            showStatus("Введите email и пароль");
+            showError("Пожалуйста, заполните все поля");
             return;
         }
 
@@ -38,15 +37,20 @@ public class LoginController {
 
                 Stage stage = (Stage) emailField.getScene().getWindow();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/uvelirkurs/mainmenu.fxml"));
-                stage.setScene(new Scene(loader.load()));
+                Scene scene = new Scene(loader.load());
+
+                MainController mainController = loader.getController();
+                mainController.setCurrentUser(user);
+
+                stage.setScene(scene);
+                stage.setTitle("Uvelir Shop - Магазин");
             } else {
-                showStatus("Не удалось получить данные пользователя");
+                showError("Не удалось получить данные пользователя");
             }
         } else {
-            showStatus("Неверный email или пароль");
+            showError("Неверный email или пароль");
         }
     }
-
 
     @FXML
     private void goToRegister() throws Exception {
@@ -55,10 +59,8 @@ public class LoginController {
         stage.setScene(new Scene(loader.load()));
     }
 
-    private void showStatus(String message) {
-        statusFlow.getChildren().clear();
-        Text text = new Text(message);
-        text.setStyle("-fx-fill: red; -fx-font-weight: bold; -fx-font-size: 14px;");
-        statusFlow.getChildren().add(text);
+    private void showError(String message) {
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
     }
 }

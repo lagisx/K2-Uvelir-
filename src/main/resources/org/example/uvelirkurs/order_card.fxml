@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.example.uvelirkurs.controllers.OrderCardController"
+      spacing="16"
+      styleClass="order-card"
+      stylesheets="@styles.css">
+
+    <HBox spacing="20" alignment="CENTER_LEFT">
+        <VBox spacing="5">
+            <Label fx:id="orderNumberLabel" 
+                   text="Заказ #..."
+                   styleClass="order-number"/>
+            <Label fx:id="dateLabel" 
+                   text="Дата"
+                   styleClass="order-date"/>
+        </VBox>
+
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <Region prefHeight="1" styleClass="separator-line"/>
+
+    <VBox fx:id="detailsContainer" spacing="12"/>
+
+    <HBox spacing="20" alignment="CENTER" style="-fx-padding: 10 0 0 0; -fx-border-color: #e0e0e0; -fx-border-width: 1 0 0 0;">
+        <Label text="Итого:" styleClass="label-subtitle"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="totalAmountLabel" 
+               text="0.00 ₽"
+               styleClass="total-price"/>
+    </HBox>
+
+</VBox>

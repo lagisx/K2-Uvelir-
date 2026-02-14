@@ -3,18 +3,14 @@ package org.example.uvelirkurs.controllers;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
+import javafx.stage.Stage;
 import org.example.uvelirkurs.BDandAPI.SessionManager;
 import org.example.uvelirkurs.BDandAPI.SupabaseService;
-import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.CompletableFuture;
 
 public class ProfileController {
 
@@ -25,6 +21,8 @@ public class ProfileController {
     @FXML private TextField phoneField;
     @FXML private PasswordField passwordField;
     @FXML private PasswordField currentPasswordField;
+    @FXML private Label userNameDisplay;
+    @FXML private Label avatarLabel;
 
     private JSONObject currentUser;
 
@@ -34,6 +32,15 @@ public class ProfileController {
         nameField.setText(user.optString("fullname"));
         emailField.setText(user.optString("email"));
         phoneField.setText(user.optString("phone"));
+        
+        String displayName = user.optString("fullname", user.optString("username", "Пользователь"));
+        if (userNameDisplay != null) {
+            userNameDisplay.setText(displayName);
+        }
+        
+        if (avatarLabel != null && !displayName.isEmpty()) {
+            avatarLabel.setText(displayName.substring(0, 1).toUpperCase());
+        }
     }
 
     @FXML
@@ -42,7 +49,7 @@ public class ProfileController {
 
         String currentPassword = currentPasswordField.getText().trim();
         if (currentPassword.isEmpty() || !currentPassword.equals(currentUser.optString("password"))) {
-            showStatus("Введите правильный текущий пароль", "red");
+            showStatus("Введите правильный текущий пароль", "error");
             return;
         }
 
@@ -57,7 +64,7 @@ public class ProfileController {
                 (emailToUpdate == null || emailToUpdate.equals(currentUser.optString("email"))) &&
                 (phoneToUpdate == null || phoneToUpdate.equals(currentUser.optString("phone"))) &&
                 (passwordToUpdate == null)) {
-            showStatus("Нет изменений", "orange");
+            showStatus("Нет изменений для сохранения", "warning");
             return;
         }
 
@@ -77,37 +84,44 @@ public class ProfileController {
                         passwordField.clear();
                         currentPasswordField.clear();
 
-                        showStatus("Данные сохранены", "green");
+                        showStatus("Данные успешно сохранены", "success");
+                        
+                        String displayName = currentUser.optString("fullname", currentUser.optString("username", "Пользователь"));
+                        if (userNameDisplay != null) {
+                            userNameDisplay.setText(displayName);
+                        }
                     } else {
-                        showStatus("Ошибка при обновлении профиля", "red");
+                        showStatus("Ошибка при обновлении профиля", "error");
                     }
                 }))
                 .exceptionally(ex -> {
-                    Platform.runLater(() -> showStatus("Ошибка при обновлении профиля", "red"));
+                    Platform.runLater(() -> showStatus("Ошибка при обновлении профиля", "error"));
                     ex.printStackTrace();
                     return null;
                 });
     }
 
     @FXML
-    private void cancel() {
+    private void goBack() {
         if (currentUser == null) return;
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/uvelirkurs/mainmenu.fxml"));
-            Pane root = loader.load();
+            
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            Scene scene = new Scene(loader.load(), stage.getWidth(), stage.getHeight());
 
             MainController mainController = loader.getController();
             mainController.setCurrentUser(currentUser);
 
-            usernameField.getScene().setRoot(root);
-        } catch (IOException e) {
+            stage.setScene(scene);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void showStatus(String text, String color) {
+    private void showStatus(String text, String type) {
         statusLabel.setText(text);
-        statusLabel.setStyle("-fx-text-fill:" + color + "; -fx-font-weight:bold;");
+        statusLabel.setVisible(true);
     }
 }

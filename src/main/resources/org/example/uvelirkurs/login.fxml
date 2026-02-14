@@ -1,21 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
 
-<AnchorPane prefHeight="300" prefWidth="400" style="-fx-background-color: linear-gradient(to bottom right, #f5f7fa, #c3cfe2);" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.uvelirkurs.controllers.LoginController">
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="org.example.uvelirkurs.controllers.LoginController"
+           stylesheets="@styles.css"
+           style="-fx-background-color: linear-gradient(to bottom right, #4a5fd8, #764ba2);">
 
-    <Label layoutX="150" layoutY="20" style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Авторизация" />
+    <VBox alignment="CENTER" spacing="25" maxWidth="420" maxHeight="550" styleClass="card">
 
-    <Label layoutX="50" layoutY="70" text="Email:" />
-    <TextField fx:id="emailField" layoutX="150" layoutY="65" prefWidth="200" />
+        <VBox alignment="CENTER" spacing="10">
+            <Label text="💎" style="-fx-font-size: 48px;"/>
+            <Label text="Добро пожаловать" styleClass="label-title"/>
+            <Label text="Войдите в свой аккаунт" styleClass="label-subtitle"/>
+        </VBox>
 
-    <Label layoutX="50" layoutY="110" text="Пароль:" />
-    <PasswordField fx:id="passwordField" layoutX="150" layoutY="105" prefWidth="200" />
-    <TextField fx:id="passwordVisibleField" layoutX="150" layoutY="105" prefWidth="200" visible="false" />
-    <Button layoutX="150" layoutY="180" onAction="#handleLogin" prefWidth="100" text="Вход" />
-    <Button layoutX="260" layoutY="180" onAction="#goToRegister" prefWidth="100" text="Регистрация" />
+        <VBox spacing="8">
+            <Label text="Email" styleClass="label-subtitle"/>
+            <TextField fx:id="emailField"
+                       promptText="Введите email"
+                       styleClass="text-field"
+                       prefWidth="320"/>
+        </VBox>
 
-    <TextFlow fx:id="statusFlow" layoutX="50" layoutY="260" prefHeight="30" prefWidth="300" />
-</AnchorPane>
+        <VBox spacing="8">
+            <Label text="Пароль" styleClass="label-subtitle"/>
+            <PasswordField fx:id="passwordField"
+                           promptText="Введите пароль"
+                           styleClass="text-field"
+                           prefWidth="320"/>
+        </VBox>
+
+        <Label fx:id="errorLabel"
+               visible="false"
+               wrapText="true"
+               maxWidth="320"
+               styleClass="error-text"/>
+
+        <Button text="Войти"
+                onAction="#handleLogin"
+                styleClass="button-primary"
+                maxWidth="Infinity"
+                prefWidth="320"/>
+
+        <HBox alignment="CENTER" spacing="10" maxWidth="320">
+            <Separator HBox.hgrow="ALWAYS" styleClass="separator-line"/>
+            <Label text="или" styleClass="label-small"/>
+            <Separator HBox.hgrow="ALWAYS" styleClass="separator-line"/>
+        </HBox>
+
+        <HBox alignment="CENTER" spacing="5">
+            <Label text="Нет аккаунта?" styleClass="label-small"/>
+            <Hyperlink text="Зарегистрироваться"
+                       onAction="#goToRegister"
+                       style="-fx-text-fill: #4a5fd8;"/>
+        </HBox>
+
+    </VBox>
+
+</StackPane>

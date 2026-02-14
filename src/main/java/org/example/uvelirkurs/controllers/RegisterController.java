@@ -24,23 +24,35 @@ public class RegisterController {
         String fullname = fullnameField.getText().trim();
         String phone = phoneField.getText().trim();
 
-        /* if (email.isEmpty() || password.isEmpty() || fullname.isEmpty()) {
-            showStatus("Заполните все обязательные поля");
+        if (email.isEmpty() || password.isEmpty() || fullname.isEmpty()) {
+            showError("Email, имя и пароль обязательны для заполнения");
             return;
         }
 
-        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
-            showStatus("Введите корректный email");
+        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            showError("Введите корректный email адрес");
             return;
         }
-         */
+
+        if (password.length() < 6) {
+            showError("Пароль должен содержать минимум 6 символов");
+            return;
+        }
 
         boolean success = SupabaseService.registerUser(email, password, fullname, phone);
 
         if (success) {
-            showStatus("Регистрация успешна! Данные сохранены в базе.");
+            showSuccess("Регистрация успешна! Перенаправление...");
+            javafx.application.Platform.runLater(() -> {
+                try {
+                    Thread.sleep(1500);
+                    goToLogin();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
         } else {
-            showStatus("Ошибка записи в базу (пользователь может уже существовать)");
+            showError("Ошибка регистрации. Возможно, email уже используется");
         }
     }
 
@@ -51,7 +63,12 @@ public class RegisterController {
         stage.setScene(new Scene(loader.load()));
     }
 
-    private void showStatus(String message) {
+    private void showError(String message) {
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+    }
+
+    private void showSuccess(String message) {
         errorLabel.setText(message);
         errorLabel.setVisible(true);
     }

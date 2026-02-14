@@ -3,7 +3,6 @@ package org.example.uvelirkurs.BDandAPI;
 import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import com.google.gson.Gson;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -99,6 +98,29 @@ public class SupabaseService {
         }
     }
 
+    public static CompletableFuture<JSONArray> getProductsAsync() {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                URL url = new URL(SUPABASE_URL + "/rest/v1/products");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("apikey", API_KEY);
+                conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+
+                String response;
+                try (Scanner scanner = new Scanner(conn.getInputStream())) {
+                    response = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+                }
+
+                return new JSONArray(response);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new JSONArray();
+            }
+        });
+    }
+
     public static JSONArray getProducts() {
         try {
             URL url = new URL(SUPABASE_URL + "/rest/v1/products");
@@ -142,6 +164,9 @@ public class SupabaseService {
         }
     }
 
+    public static CompletableFuture<JSONArray> getCategoriesAsync() {
+        return CompletableFuture.supplyAsync(() -> request("categories"));
+    }
 
     public static JSONArray getCategories() {
         return request("categories");
@@ -203,7 +228,6 @@ public class SupabaseService {
         });
     }
 
-
     public static JSONObject getCurrentUserByEmail(String email) {
         try {
             URL url = new URL(SUPABASE_URL + "/rest/v1/users?email=eq." + email);
@@ -228,4 +252,234 @@ public class SupabaseService {
         }
     }
 
+    public static CompletableFuture<Boolean> saveCartItem(int userId, int productId, int quantity, String imageUrl) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                URL checkUrl = new URL(SUPABASE_URL + "/rest/v1/cart_items?user_id=eq." + userId + "&product_id=eq." + productId);
+                HttpURLConnection checkConn = (HttpURLConnection) checkUrl.openConnection();
+                checkConn.setRequestMethod("GET");
+                checkConn.setRequestProperty("apikey", API_KEY);
+                checkConn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+
+                String checkResp;
+                try (Scanner scanner = new Scanner(checkConn.getInputStream())) {
+                    checkResp = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+                }
+
+                JSONArray existing = new JSONArray(checkResp);
+                
+                if (!existing.isEmpty()) {
+                    int cartItemId = existing.getJSONObject(0).getInt("id");
+                    URL updateUrl = new URL(SUPABASE_URL + "/rest/v1/cart_items?id=eq." + cartItemId);
+                    HttpURLConnection updateConn = (HttpURLConnection) updateUrl.openConnection();
+                    updateConn.setRequestMethod("PATCH");
+                    updateConn.setRequestProperty("apikey", API_KEY);
+                    updateConn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+                    updateConn.setRequestProperty("Content-Type", "application/json");
+                    updateConn.setRequestProperty("Prefer", "return=minimal");
+                    updateConn.setDoOutput(true);
+
+                    JSONObject updateData = new JSONObject();
+                    updateData.put("quantity", quantity);
+
+                    try (OutputStream os = updateConn.getOutputStream()) {
+                        os.write(updateData.toString().getBytes(StandardCharsets.UTF_8));
+                    }
+
+                    int code = updateConn.getResponseCode();
+                    return code >= 200 && code < 300;
+                } else {
+                    URL url = new URL(SUPABASE_URL + "/rest/v1/cart_items");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("apikey", API_KEY);
+                    conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setRequestProperty("Prefer", "return=minimal");
+                    conn.setDoOutput(true);
+
+                    JSONObject cartData = new JSONObject();
+                    cartData.put("user_id", userId);
+                    cartData.put("product_id", productId);
+                    cartData.put("quantity", quantity);
+                    cartData.put("image_url", imageUrl);
+
+                    try (OutputStream os = conn.getOutputStream()) {
+                        os.write(cartData.toString().getBytes(StandardCharsets.UTF_8));
+                    }
+
+                    int code = conn.getResponseCode();
+                    return code >= 200 && code < 300;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        });
+    }
+
+    public static CompletableFuture<JSONArray> getCartItems(int userId) {
+        return CompletableFuture.supplyAsync(() -> {
+            return request("cart_items?user_id=eq." + userId);
+        });
+    }
+
+    public static CompletableFuture<Boolean> removeCartItem(int userId, int productId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                URL url = new URL(SUPABASE_URL + "/rest/v1/cart_items?user_id=eq." + userId + "&product_id=eq." + productId);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("DELETE");
+                conn.setRequestProperty("apikey", API_KEY);
+                conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+
+                int code = conn.getResponseCode();
+                return code >= 200 && code < 300;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        });
+    }
+
+    public static CompletableFuture<Boolean> clearCart(int userId) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                URL url = new URL(SUPABASE_URL + "/rest/v1/cart_items?user_id=eq." + userId);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("DELETE");
+                conn.setRequestProperty("apikey", API_KEY);
+                conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+
+                int code = conn.getResponseCode();
+                return code >= 200 && code < 300;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        });
+    }
+
+    public static int createOrder(int userId, double totalAmount, String shippingAddress,
+                                  String shippingCity, String shippingPhone,
+                                  String paymentMethod, String notes) {
+        try {
+            URL url = new URL(SUPABASE_URL + "/rest/v1/orders");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("apikey", API_KEY);
+            conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Prefer", "return=representation");
+            conn.setDoOutput(true);
+
+            JSONObject orderData = new JSONObject();
+            orderData.put("user_id", userId);
+
+            String orderNumber = "ORD-" + System.currentTimeMillis();
+            orderData.put("order_number", orderNumber);
+
+            orderData.put("total_amount", totalAmount);
+            orderData.put("shipping_address", shippingAddress);
+            orderData.put("shipping_city", shippingCity);
+            orderData.put("shipping_phone", shippingPhone);
+            orderData.put("payment_method", paymentMethod);
+
+            if (notes != null && !notes.isEmpty()) {
+                orderData.put("notes", notes);
+            }
+
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(orderData.toString().getBytes(StandardCharsets.UTF_8));
+            }
+
+            int code = conn.getResponseCode();
+            if (code >= 200 && code < 300) {
+                String response;
+                try (Scanner scanner = new Scanner(conn.getInputStream())) {
+                    response = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+                }
+
+                JSONArray arr = new JSONArray(response);
+                if (!arr.isEmpty()) {
+                    return arr.getJSONObject(0).getInt("id");
+                }
+            } else {
+                String errorResponse;
+                try (Scanner scanner = new Scanner(conn.getErrorStream())) {
+                    errorResponse = scanner.useDelimiter("\\A").hasNext() ? scanner.next() : "";
+                }
+                System.out.println("Ошибка создания заказа: " + errorResponse);
+            }
+
+            return -1;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public static boolean addOrderItem(int orderId, int productId, int quantity, double unitPrice) {
+        try {
+            URL url = new URL(SUPABASE_URL + "/rest/v1/order_items");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("apikey", API_KEY);
+            conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Prefer", "return=minimal");
+            conn.setDoOutput(true);
+
+            JSONObject itemData = new JSONObject();
+            itemData.put("order_id", orderId);
+            itemData.put("product_id", productId);
+            itemData.put("quantity", quantity);
+            itemData.put("unit_price", unitPrice);
+
+            double subtotal = quantity * unitPrice;
+            itemData.put("subtotal", subtotal);
+
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(itemData.toString().getBytes(StandardCharsets.UTF_8));
+            }
+
+            int code = conn.getResponseCode();
+            return code >= 200 && code < 300;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static CompletableFuture<JSONArray> getUserOrdersAsync(int userId) {
+        return CompletableFuture.supplyAsync(() -> {
+            return request("orders?user_id=eq." + userId + "&order=created_at.desc");
+        });
+    }
+
+    public static JSONArray getUserOrders(int userId) {
+        return request("orders?user_id=eq." + userId + "&order=created_at.desc");
+    }
+
+    public static JSONArray getOrderItems(int orderId) {
+        return request("order_items?order_id=eq." + orderId);
+    }
+
+    public static JSONObject getProductById(int productId) {
+        try {
+            JSONArray arr = request("products?id=eq." + productId);
+            if (!arr.isEmpty()) {
+                return arr.getJSONObject(0);
+            }
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

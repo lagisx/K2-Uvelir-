@@ -9,39 +9,37 @@
       fx:controller="org.example.uvelirkurs.controllers.ProductCardController"
       spacing="10"
       prefWidth="220"
-      style="
-        -fx-background-color: white;
-        -fx-padding: 12;
-        -fx-background-radius: 12;
-        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 8, 0, 0, 4);
-      ">
+      styleClass="product-card"
+      stylesheets="@styles.css">
 
-    <!-- Изображение продукта -->
     <ImageView fx:id="imageView"
                fitWidth="196"
                fitHeight="120"
                preserveRatio="true"
                smooth="true"
-               style="-fx-background-radius:10; -fx-border-radius:10; -fx-border-color:#ddd; -fx-border-width:1;" />
+               style="-fx-background-radius: 6; -fx-border-radius: 6; -fx-border-color: #e0e0e0; -fx-border-width: 1;"/>
 
     <Label fx:id="nameLabel"
            wrapText="true"
-           style="-fx-font-weight:bold; -fx-font-size:14; -fx-text-fill:#111;" />
+           styleClass="product-name"/>
 
     <Label fx:id="materialLabel"
-           style="-fx-text-fill:#555; -fx-font-size:12;" />
+           styleClass="label-small"/>
 
     <Label fx:id="priceLabel"
-           style="-fx-font-size:16; -fx-font-weight:bold; -fx-text-fill:#1e3a8a;" />
+           styleClass="product-price"/>
 
     <HBox spacing="8">
         <Button text="Подробнее"
-                style="-fx-background-color:transparent; -fx-border-color:#1e3a8a; -fx-text-fill:#1e3a8a; -fx-border-radius:8; -fx-background-radius:8;"
+                styleClass="button-secondary"
                 onAction="#onDetails"
-                maxWidth="Infinity" />
-        <Button text="Купить"
-                style="-fx-background-color:#1e3a8a; -fx-text-fill:white; -fx-background-radius:8;"
-                maxWidth="Infinity" />
+                maxWidth="Infinity"
+                HBox.hgrow="ALWAYS"/>
+        <Button text="🛒"
+                styleClass="button-primary"
+                onAction="#addToCart"
+                maxWidth="Infinity"
+                HBox.hgrow="ALWAYS"/>
     </HBox>
 
 </VBox>

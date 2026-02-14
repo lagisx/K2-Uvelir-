@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.uvelirkurs.controllers.OrderHistoryController"
+            styleClass="main-background"
+            stylesheets="@styles.css">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="top-bar">
+            <Button text="← Назад" 
+                    onAction="#goBack"
+                    styleClass="button-secondary"/>
+            <Label text="Мои заказы" styleClass="label-title"/>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+            <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 25;">
+                
+                <VBox fx:id="ordersContainer" 
+                      spacing="15" 
+                      maxWidth="900"/>
+
+                <VBox fx:id="emptyOrdersContainer"
+                      alignment="CENTER" 
+                      spacing="15" 
+                      visible="false"
+                      style="-fx-padding: 60 0;">
+                    <Label text="📦" style="-fx-font-size: 64px;"/>
+                    <Label fx:id="emptyLabel" 
+                           text="У вас пока нет заказов"
+                           styleClass="empty-state"/>
+                    <Label text="Оформите первый заказ из каталога" 
+                           styleClass="label-small"/>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

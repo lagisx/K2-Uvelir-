@@ -1,40 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.geometry.Insets?>
 
-<StackPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.uvelirkurs.controllers.MainController">
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12" 
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="org.example.uvelirkurs.controllers.MainController"
+            styleClass="main-background"
+            stylesheets="@styles.css">
 
-    <BorderPane style="-fx-background-color:#f3f4f6;">
+    <top>
+        <VBox styleClass="top-bar">
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <VBox alignment="CENTER_LEFT" spacing="2">
+                    <Label text="💎 Uvelir Shop" styleClass="label-title"/>
+                    <Label text="Ювелирные украшения" styleClass="label-small"/>
+                </VBox>
 
-        <top>
-            <HBox spacing="15" style="-fx-padding:16; -fx-background-color:linear-gradient(to right,#1e3a8a,#60a5fa);">
+                <Region HBox.hgrow="ALWAYS"/>
 
-                <Label style="-fx-text-fill:white; -fx-font-size:18; -fx-font-weight:bold" text="Uvelir Shop" />
+                <TextField promptText="🔍 Поиск украшений..." 
+                          styleClass="text-field"
+                          prefWidth="350"/>
 
-                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="ordersButton"
+                        text="📋 Мои заказы"
+                        styleClass="button-secondary"
+                        prefWidth="140"/>
 
-                <TextField prefHeight="25.0" prefWidth="422.0" promptText="Поиск..." />
+                <StackPane>
+                    <Button fx:id="cartButton"
+                            text="🛒"
+                            styleClass="button-primary"
+                            prefWidth="60"/>
+                    
+                    <StackPane translateX="20" translateY="-12" mouseTransparent="true">
+                        <Circle radius="11" style="-fx-fill: #e74c3c;"/>
+                        <Label fx:id="cartBadge"
+                               text="0"
+                               visible="false"
+                               style="-fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                    </StackPane>
+                </StackPane>
+
                 <Button fx:id="profileButton"
-                        text="Профиль"
-                        style="-fx-background-color:#1e3a8a; -fx-text-fill:white;"
-                        prefWidth="100"/>
+                        text="👤 Профиль"
+                        styleClass="button-primary"
+                        prefWidth="120"/>
             </HBox>
-        </top>
+            
+            <Region styleClass="separator-line"/>
+        </VBox>
+    </top>
 
-        <left>
-            <VBox fx:id="categoriesBox" prefWidth="180" spacing="10" style="-fx-padding:15; -fx-background-color:white;">
+    <left>
+        <VBox spacing="0" 
+              prefWidth="240" 
+              style="-fx-background-color: white; -fx-padding: 20 15; -fx-border-color: #e0e0e0; -fx-border-width: 0 1 0 0;">
+            
+            <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 0 10 15 10;">
+                <Label text="📂" style="-fx-font-size: 18px;"/>
+                <Label text="Категории" styleClass="label-subtitle"/>
+            </HBox>
+            
+            <Separator styleClass="separator-line">
+                <VBox.margin>
+                    <Insets bottom="10"/>
+                </VBox.margin>
+            </Separator>
 
-                <Label style="-fx-font-size:16; -fx-font-weight:bold" text="Категории" />
-
-            </VBox>
-        </left>
-
-        <center>
-            <ScrollPane fitToWidth="true" prefWidth="490.0" style="-fx-background-color:transparent;">
-                <FlowPane fx:id="productsPane" hgap="16" style="-fx-padding:20" vgap="16" />
+            <ScrollPane fitToWidth="true" 
+                       styleClass="scroll-pane"
+                       VBox.vgrow="ALWAYS">
+                <VBox fx:id="categoriesBox" 
+                      spacing="6" 
+                      style="-fx-padding: 5 0;"/>
             </ScrollPane>
-        </center>
+        </VBox>
+    </left>
 
-    </BorderPane>
-</StackPane>
+    <center>
+        <VBox styleClass="main-background">
+            <ScrollPane fitToWidth="true" 
+                       fitToHeight="true"
+                       styleClass="scroll-pane"
+                       VBox.vgrow="ALWAYS">
+                
+                <VBox spacing="20" style="-fx-padding: 25;">
+                    <HBox alignment="CENTER_LEFT" spacing="15">
+                        <Label text="Каталог товаров" styleClass="label-title"/>
+                        <Label fx:id="productCountLabel"
+                               text="0 товаров"
+                               styleClass="label-subtitle"/>
+                    </HBox>
+                    
+                    <FlowPane fx:id="productsPane" 
+                             hgap="20" 
+                             vgap="20"
+                             prefWrapLength="1000"
+                             alignment="TOP_LEFT"/>
+                </VBox>
+            </ScrollPane>
+        </VBox>
+    </center>
+
+    <StackPane fx:id="loadingOverlay" visible="false" 
+               style="-fx-background-color: rgba(0,0,0,0.3);">
+        <ProgressIndicator fx:id="loadingIndicator"/>
+    </StackPane>
+
+</BorderPane>
