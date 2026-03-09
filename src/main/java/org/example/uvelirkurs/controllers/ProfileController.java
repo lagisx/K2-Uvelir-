@@ -116,7 +116,7 @@ public class ProfileController {
 
         confirmAlert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                CartManager.getInstance().clearCart();
+                CartManager.getInstance().clearLocalCart();
 
                 SessionManager.logout();
 

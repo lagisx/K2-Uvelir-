@@ -70,7 +70,7 @@ public class OrderCardController {
                     JSONObject item = orderItems.getJSONObject(i);
                     int productId = item.getInt("product_id");
                     int quantity = item.getInt("quantity");
-                    double price = item.getDouble("price");
+                    double price = item.optDouble("unit_price", item.optDouble("price", 0));
 
                     JSONObject product = SupabaseService.getProductById(productId);
 

@@ -184,8 +184,52 @@ public class ManagerPanelController {
             return;
         }
 
+        JSONObject product = SupabaseService.getProductById(selected.getId());
+        if (product == null) {
+            showAlert("Ошибка", "Не удалось загрузить данные товара");
+            return;
+        }
 
-        showAlert("В разработке :(", "Пока что нет такой функции");
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                    getClass().getResource("/org/example/uvelirkurs/edit_product_dialog.fxml"));
+            DialogPane dialogPane = loader.load();
+            EditProductDialogController controller = loader.getController();
+            controller.setDialogPane(dialogPane);
+            controller.setProduct(product);
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(dialogPane);
+            dialog.setTitle("Редактирование товара");
+
+            Optional<ButtonType> result = dialog.showAndWait();
+            if (result.isPresent() && result.get().getButtonData() == ButtonBar.ButtonData.OK_DONE) {
+                JSONObject updated = controller.getProductData();
+                showLoading(true);
+                SupabaseServiceExtension.updateProduct(
+                        selected.getId(),
+                        updated.optString("name", null),
+                        updated.has("category_id") ? updated.getInt("category_id") : null,
+                        updated.has("supplier_id") ? updated.getInt("supplier_id") : null,
+                        updated.optString("description", null),
+                        updated.optString("material", null),
+                        updated.optString("purity", null),
+                        updated.has("weight") ? updated.getDouble("weight") : null,
+                        updated.optString("size", null),
+                        updated.has("price") ? updated.getDouble("price") : null,
+                        updated.has("cost_price") ? updated.getDouble("cost_price") : null,
+                        updated.has("stock_quantity") ? updated.getInt("stock_quantity") : null,
+                        updated.optString("collection", null)
+                ).thenAccept(success -> Platform.runLater(() -> {
+                    showLoading(false);
+                    if (success) { showStatus("✅ Товар успешно обновлён", "success"); loadProducts(); }
+                    else showStatus("❌ Ошибка обновления товара", "error");
+                }));
+            }
+        } catch (Exception e) {
+            showAlert("Ошибка", "Не удалось открыть редактор: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void addProductImages() {
@@ -254,59 +298,89 @@ public class ManagerPanelController {
 
     private void viewProductInfo() {
         ProductData selected = productsTable.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            showAlert("Ошибка", "Выберите товар из таблицы");
-            return;
-        }
+        if (selected == null) { showAlert("Ошибка", "Выберите товар из таблицы"); return; }
 
         JSONObject product = SupabaseService.getProductById(selected.getId());
-        if (product == null) {
-            showAlert("Ошибка", "Не удалось загрузить информацию о товаре");
-            return;
-        }
+        if (product == null) { showAlert("Ошибка", "Не удалось загрузить информацию о товаре"); return; }
 
         JSONArray images = SupabaseService.getProductImages(selected.getId());
-        StringBuilder imageUrls = new StringBuilder();
-        if (images.length() > 0) {
-            for (int i = 0; i < images.length(); i++) {
-                imageUrls.append("\n  ").append(i + 1).append(". ")
-                        .append(images.getJSONObject(i).getString("image_url"));
-            }
-        } else {
-            imageUrls.append("\n  Нет изображений");
-        }
 
-        String info = String.format(
-                        "Название: %s\n" +
-                        "Материал: %s\n" +
-                        "Проба: %s\n" +
-                        "⚖Вес: %.2f г\n" +
-                        "Размер: %s\n" +
-                        "Цена: %.2f ₽\n" +
-                        "Себестоимость: %.2f ₽\n" +
-                        "На складе: %d шт.\n" +
-                        "Коллекция: %s\n" +
-                        "Описание:\n%s\n" +
-                        "Изображения:%s",
-                product.optString("name", "-"),
-                product.optString("material", "-"),
-                product.optString("purity", "-"),
-                product.optDouble("weight", 0),
-                product.optString("size", "-"),
-                product.optDouble("price", 0),
-                product.optDouble("cost_price", 0),
-                product.optInt("stock_quantity", 0),
-                product.optString("collection", "-"),
-                product.optString("description", "Нет описания"),
-                imageUrls.toString()
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Информация о товаре");
+
+        javafx.scene.layout.VBox content = new javafx.scene.layout.VBox(0);
+        content.setStyle("-fx-background-color: white;");
+
+        javafx.scene.layout.HBox header = new javafx.scene.layout.HBox(12);
+        header.setStyle("-fx-background-color: #1a1a2e; -fx-padding: 20 24;");
+        header.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        Label icon = new Label("💎");
+        icon.setStyle("-fx-font-size: 28px;");
+        javafx.scene.layout.VBox hText = new javafx.scene.layout.VBox(4);
+        Label hTitle = new Label(product.optString("name", ""));
+        hTitle.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
+        Label hSub = new Label("ID #" + product.optInt("id") + "  ·  " + product.optString("material", ""));
+        hSub.setStyle("-fx-text-fill: rgba(255,255,255,0.65); -fx-font-size: 13px;");
+        hText.getChildren().addAll(hTitle, hSub);
+        header.getChildren().addAll(icon, hText);
+
+        javafx.scene.layout.HBox priceBadge = new javafx.scene.layout.HBox();
+        priceBadge.setStyle("-fx-background-color: #4a5fd8; -fx-padding: 13 24;");
+        priceBadge.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        Label priceLabel = new Label(String.format("%.2f ₽", product.optDouble("price", 0)));
+        priceLabel.setStyle("-fx-text-fill: white; -fx-font-size: 21px; -fx-font-weight: bold;");
+        javafx.scene.layout.Region sp = new javafx.scene.layout.Region();
+        javafx.scene.layout.HBox.setHgrow(sp, javafx.scene.layout.Priority.ALWAYS);
+        Label costLabel = new Label(String.format("Себестоимость: %.2f ₽", product.optDouble("cost_price", 0)));
+        costLabel.setStyle("-fx-text-fill: rgba(255,255,255,0.75); -fx-font-size: 13px;");
+        priceBadge.getChildren().addAll(priceLabel, sp, costLabel);
+
+        javafx.scene.layout.VBox fields = new javafx.scene.layout.VBox(0);
+        fields.getChildren().addAll(
+            infoRow("Проба",      product.optString("purity", "-"),               false),
+            infoRow("Вес",        product.optDouble("weight", 0) + " г",           true),
+            infoRow("Размер",     product.optString("size", "-"),                   false),
+            infoRow("На складе",  product.optInt("stock_quantity", 0) + " шт.",     true),
+            infoRow("Коллекция",  product.optString("collection", "-"),             false),
+            infoRow("Описание",   product.optString("description", "-"),            true)
         );
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Информация о товаре");
-        alert.setHeaderText("📦 Товар #" + selected.getId());
-        alert.setContentText(info);
-        alert.getDialogPane().setPrefWidth(600);
-        alert.showAndWait();
+        if (images.length() > 0) {
+            javafx.scene.layout.VBox imgSection = new javafx.scene.layout.VBox(5);
+            imgSection.setStyle("-fx-padding: 12 20; -fx-background-color: #f0f4ff;");
+            Label imgTitle = new Label("🖼️  Изображения: " + images.length());
+            imgTitle.setStyle("-fx-font-size: 12px; -fx-text-fill: #4a5fd8; -fx-font-weight: bold;");
+            imgSection.getChildren().add(imgTitle);
+            for (int i = 0; i < images.length(); i++) {
+                String url = images.getJSONObject(i).getString("image_url");
+                int lastSlash = url.lastIndexOf('/');
+                String shortUrl = lastSlash >= 0 ? "..." + url.substring(lastSlash) : url;
+                Label urlLabel = new Label((i + 1) + ". " + shortUrl);
+                urlLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #555;");
+                imgSection.getChildren().add(urlLabel);
+            }
+            fields.getChildren().add(imgSection);
+        }
+
+        content.getChildren().addAll(header, priceBadge, fields);
+        dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.getDialogPane().setPrefWidth(460);
+        dialog.showAndWait();
+    }
+
+    private javafx.scene.layout.HBox infoRow(String label, String value, boolean alt) {
+        javafx.scene.layout.HBox row = new javafx.scene.layout.HBox();
+        row.setStyle("-fx-padding: 11 20; -fx-background-color: " + (alt ? "#fafafa" : "white") + ";");
+        Label lbl = new Label(label);
+        lbl.setStyle("-fx-text-fill: #888; -fx-font-size: 13px; -fx-min-width: 110;");
+        Label val = new Label(value == null || value.isEmpty() ? "—" : value);
+        val.setStyle("-fx-text-fill: #222; -fx-font-size: 13px; -fx-font-weight: bold;");
+        val.setWrapText(true);
+        javafx.scene.layout.Region sp = new javafx.scene.layout.Region();
+        javafx.scene.layout.HBox.setHgrow(sp, javafx.scene.layout.Priority.ALWAYS);
+        row.getChildren().addAll(lbl, sp, val);
+        return row;
     }
 
     @FXML
@@ -336,6 +410,7 @@ public class ManagerPanelController {
     @FXML
     private void goBack() {
         try {
+            if (productsTable == null || productsTable.getScene() == null) return;
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/uvelirkurs/mainmenu.fxml"));
             Stage stage = (Stage) productsTable.getScene().getWindow();
             Scene scene = new Scene(loader.load(), stage.getWidth(), stage.getHeight());

@@ -58,6 +58,7 @@ public class CartController {
 
                 CartItemController controller = loader.getController();
                 controller.setCartItem(item);
+                controller.setCartController(this);
 
                 cartItemsContainer.getChildren().add(cartItemCard);
             } catch (Exception e) {
@@ -71,6 +72,10 @@ public class CartController {
     private void updateTotalPrice() {
         double total = cartManager.getTotalPrice();
         totalPriceLabel.setText(String.format("%.2f ₽", total));
+    }
+
+    public void refreshTotal() {
+        updateTotalPrice();
     }
 
     @FXML

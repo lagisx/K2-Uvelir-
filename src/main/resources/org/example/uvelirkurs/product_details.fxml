@@ -27,18 +27,24 @@
 
                     <HBox spacing="15" alignment="CENTER">
                         <Button fx:id="prevButton" 
-                                text="←" 
                                 onAction="#prevImage" 
                                 styleClass="button-primary"
-                                style="-fx-background-radius: 50; -fx-pref-width: 45; -fx-pref-height: 45;"/>
+                                style="-fx-background-radius: 50; -fx-pref-width: 45; -fx-pref-height: 45; -fx-font-size: 18px; -fx-font-family: 'Arial';">
+                            <graphic>
+                                <Label text="&#8592;" style="-fx-text-fill: white; -fx-font-size: 18px;"/>
+                            </graphic>
+                        </Button>
                         <Label fx:id="imageCounter" 
                                text="1 / 1"
                                styleClass="label-subtitle"/>
                         <Button fx:id="nextButton" 
-                                text="→" 
                                 onAction="#nextImage" 
                                 styleClass="button-primary"
-                                style="-fx-background-radius: 50; -fx-pref-width: 45; -fx-pref-height: 45;"/>
+                                style="-fx-background-radius: 50; -fx-pref-width: 45; -fx-pref-height: 45;">
+                            <graphic>
+                                <Label text="&#8594;" style="-fx-text-fill: white; -fx-font-size: 18px;"/>
+                            </graphic>
+                        </Button>
                     </HBox>
                     
                 </VBox>
@@ -64,12 +70,36 @@
                                styleClass="total-price"/>
                     </HBox>
 
-                    <VBox spacing="10">
-                        <Label text="Описание" styleClass="label-subtitle"/>
+                    <VBox spacing="8">
+                        <Label text="Описание" styleClass="label-subtitle" style="-fx-font-weight: bold;"/>
                         <Label fx:id="descriptionLabel" 
                                text="Описание товара"
                                wrapText="true"
                                styleClass="label-small"/>
+                    </VBox>
+
+                    <VBox spacing="8" style="-fx-background-color: #f8f9ff; -fx-background-radius: 10; -fx-padding: 15;">
+                        <Label text="Характеристики" styleClass="label-subtitle" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                        <HBox spacing="10">
+                            <Label text="Проба:" style="-fx-font-size: 13px; -fx-text-fill: #888; -fx-min-width: 100;"/>
+                            <Label fx:id="purityLabel" text="-" style="-fx-font-size: 13px; -fx-text-fill: #333;"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Вес:" style="-fx-font-size: 13px; -fx-text-fill: #888; -fx-min-width: 100;"/>
+                            <Label fx:id="weightLabel" text="-" style="-fx-font-size: 13px; -fx-text-fill: #333;"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Размер:" style="-fx-font-size: 13px; -fx-text-fill: #888; -fx-min-width: 100;"/>
+                            <Label fx:id="sizeLabel" text="-" style="-fx-font-size: 13px; -fx-text-fill: #333;"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="Коллекция:" style="-fx-font-size: 13px; -fx-text-fill: #888; -fx-min-width: 100;"/>
+                            <Label fx:id="collectionLabel" text="-" style="-fx-font-size: 13px; -fx-text-fill: #333;"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Label text="На складе:" style="-fx-font-size: 13px; -fx-text-fill: #888; -fx-min-width: 100;"/>
+                            <Label fx:id="stockLabel" text="-" style="-fx-font-size: 13px; -fx-text-fill: #27ae60; -fx-font-weight: bold;"/>
+                        </HBox>
                     </VBox>
 
                     <VBox spacing="12" style="-fx-padding: 10 0 0 0;">

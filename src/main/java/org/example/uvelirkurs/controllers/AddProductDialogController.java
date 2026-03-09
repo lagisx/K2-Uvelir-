@@ -9,9 +9,7 @@ import org.example.uvelirkurs.models.CategoryItem;
 import org.example.uvelirkurs.models.SupplierItem;
 import org.json.JSONObject;
 
-/**
- * Контроллер диалога добавления товара
- */
+
 public class AddProductDialogController {
 
     @FXML private TextField nameField;

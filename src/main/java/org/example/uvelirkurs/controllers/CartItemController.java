@@ -23,6 +23,11 @@ public class CartItemController {
     private CartItem cartItem;
     private CartManager cartManager;
     private boolean imageLoaded = false;
+    private CartController cartController;
+
+    public void setCartController(CartController controller) {
+        this.cartController = controller;
+    }
 
     public void setCartItem(CartItem item) {
         this.cartItem = item;
@@ -65,6 +70,7 @@ public class CartItemController {
             cartManager.updateQuantity(cartItem.getProductId(), cartItem.getQuantity() + 1);
             quantityLabel.setText(String.valueOf(cartItem.getQuantity()));
             totalPriceLabel.setText(String.format("%.2f ₽", cartItem.getTotalPrice()));
+            if (cartController != null) cartController.refreshTotal();
         }
     }
 
@@ -74,6 +80,7 @@ public class CartItemController {
             cartManager.updateQuantity(cartItem.getProductId(), cartItem.getQuantity() - 1);
             quantityLabel.setText(String.valueOf(cartItem.getQuantity()));
             totalPriceLabel.setText(String.format("%.2f ₽", cartItem.getTotalPrice()));
+            if (cartController != null) cartController.refreshTotal();
         }
     }
 

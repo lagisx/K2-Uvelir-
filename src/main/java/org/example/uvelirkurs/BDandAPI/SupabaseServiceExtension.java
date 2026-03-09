@@ -1,5 +1,6 @@
 package org.example.uvelirkurs.BDandAPI;
 
+import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -109,24 +110,24 @@ public class SupabaseServiceExtension extends SupabaseService {
     public static CompletableFuture<Boolean> updateUserRole(int userId, String role) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                URL url = new URL(SUPABASE_URL + "/rest/v1/users?id=eq." + userId);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("PATCH");
-                conn.setRequestProperty("apikey", API_KEY);
-                conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setDoOutput(true);
-
                 JSONObject updateData = new JSONObject();
                 updateData.put("role", role);
 
-                try (OutputStream os = conn.getOutputStream()) {
-                    os.write(updateData.toString().getBytes(StandardCharsets.UTF_8));
+                RequestBody body = RequestBody.create(
+                        updateData.toString(),
+                        MediaType.parse("application/json")
+                );
+                Request request = new Request.Builder()
+                        .url(SUPABASE_URL + "/rest/v1/users?id=eq." + userId)
+                        .patch(body)
+                        .addHeader("apikey", API_KEY)
+                        .addHeader("Authorization", "Bearer " + API_KEY)
+                        .addHeader("Content-Type", "application/json")
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    return response.isSuccessful();
                 }
-
-                int code = conn.getResponseCode();
-                return code >= 200 && code < 300;
-
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
@@ -139,14 +140,6 @@ public class SupabaseServiceExtension extends SupabaseService {
                                                                String phone, String role) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                URL url = new URL(SUPABASE_URL + "/rest/v1/users?id=eq." + userId);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("PATCH");
-                conn.setRequestProperty("apikey", API_KEY);
-                conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setDoOutput(true);
-
                 JSONObject updateData = new JSONObject();
                 if (username != null) updateData.put("username", username);
                 if (fullname != null) updateData.put("fullname", fullname);
@@ -154,13 +147,49 @@ public class SupabaseServiceExtension extends SupabaseService {
                 if (phone != null) updateData.put("phone", phone);
                 if (role != null) updateData.put("role", role);
 
-                try (OutputStream os = conn.getOutputStream()) {
-                    os.write(updateData.toString().getBytes(StandardCharsets.UTF_8));
+                RequestBody body = RequestBody.create(
+                        updateData.toString(),
+                        MediaType.parse("application/json")
+                );
+                Request request = new Request.Builder()
+                        .url(SUPABASE_URL + "/rest/v1/users?id=eq." + userId)
+                        .patch(body)
+                        .addHeader("apikey", API_KEY)
+                        .addHeader("Authorization", "Bearer " + API_KEY)
+                        .addHeader("Content-Type", "application/json")
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    return response.isSuccessful();
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        });
+    }
 
-                int code = conn.getResponseCode();
-                return code >= 200 && code < 300;
+    public static CompletableFuture<Boolean> setUserBlocked(int userId, boolean blocked) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                JSONObject updateData = new JSONObject();
+                updateData.put("is_active", !blocked);
 
+                RequestBody body = RequestBody.create(
+                        updateData.toString(),
+                        MediaType.parse("application/json")
+                );
+                Request request = new Request.Builder()
+                        .url(SUPABASE_URL + "/rest/v1/users?id=eq." + userId)
+                        .patch(body)
+                        .addHeader("apikey", API_KEY)
+                        .addHeader("Authorization", "Bearer " + API_KEY)
+                        .addHeader("Content-Type", "application/json")
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    return response.isSuccessful();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
@@ -262,14 +291,6 @@ public class SupabaseServiceExtension extends SupabaseService {
     public static CompletableFuture<Boolean> updateProduct(int productId, String name, Integer categoryId, Integer supplierId, String description, String material, String purity, Double weight, String size, Double price, Double costPrice, Integer stockQuantity, String collection) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                URL url = new URL(SUPABASE_URL + "/rest/v1/products?id=eq." + productId);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("PATCH");
-                conn.setRequestProperty("apikey", API_KEY);
-                conn.setRequestProperty("Authorization", "Bearer " + API_KEY);
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setDoOutput(true);
-
                 JSONObject updateData = new JSONObject();
                 if (name != null) updateData.put("name", name);
                 if (categoryId != null) updateData.put("category_id", categoryId);
@@ -284,13 +305,21 @@ public class SupabaseServiceExtension extends SupabaseService {
                 if (stockQuantity != null) updateData.put("stock_quantity", stockQuantity);
                 if (collection != null) updateData.put("collection", collection);
 
-                try (OutputStream os = conn.getOutputStream()) {
-                    os.write(updateData.toString().getBytes(StandardCharsets.UTF_8));
+                RequestBody body = RequestBody.create(
+                        updateData.toString(),
+                        MediaType.parse("application/json")
+                );
+                Request request = new Request.Builder()
+                        .url(SUPABASE_URL + "/rest/v1/products?id=eq." + productId)
+                        .patch(body)
+                        .addHeader("apikey", API_KEY)
+                        .addHeader("Authorization", "Bearer " + API_KEY)
+                        .addHeader("Content-Type", "application/json")
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    return response.isSuccessful();
                 }
-
-                int code = conn.getResponseCode();
-                return code >= 200 && code < 300;
-
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;

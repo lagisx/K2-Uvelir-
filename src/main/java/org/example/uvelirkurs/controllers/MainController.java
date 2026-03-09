@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -28,6 +29,8 @@ public class MainController {
     @FXML private Label productCountLabel;
     @FXML private StackPane loadingOverlay;
     @FXML private ProgressIndicator loadingIndicator;
+    @FXML private TextField searchField;
+    @FXML private Button managerButton;
 
     private CartManager cartManager;
 
@@ -38,6 +41,13 @@ public class MainController {
         JSONObject user = SessionManager.getUser();
         if (user != null) {
             cartManager.loadCartFromDB(user.getInt("id"));
+            String role = user.optString("role", "CLIENT");
+            if ("MANAGER".equals(role) || "ADMIN".equals(role)) {
+                if (managerButton != null) {
+                    managerButton.setVisible(true);
+                    managerButton.setManaged(true);
+                }
+            }
         }
 
         loadProductsFromSupabase();
@@ -71,6 +81,46 @@ public class MainController {
             cartBadge.setVisible(true);
         } else {
             cartBadge.setVisible(false);
+        }
+    }
+
+    @FXML
+    private void handleSearch() {
+        if (searchField == null) return;
+        String query = searchField.getText().trim().toLowerCase();
+        if (query.isEmpty()) {
+            loadProductsFromSupabase();
+            return;
+        }
+        showLoading(true);
+        SupabaseService.getProductsAsync().thenAccept(products -> {
+            javafx.application.Platform.runLater(() -> {
+                org.json.JSONArray filtered = new org.json.JSONArray();
+                for (int i = 0; i < products.length(); i++) {
+                    org.json.JSONObject p = products.getJSONObject(i);
+                    String name = p.optString("name", "").toLowerCase();
+                    String material = p.optString("material", "").toLowerCase();
+                    if (name.contains(query) || material.contains(query)) {
+                        filtered.put(p);
+                    }
+                }
+                renderProducts(filtered);
+                showLoading(false);
+            });
+        }).exceptionally(ex -> {
+            javafx.application.Platform.runLater(() -> showLoading(false));
+            return null;
+        });
+    }
+
+    public void openManagerPanel() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/uvelirkurs/manager_panel.fxml"));
+            Stage stage = (Stage) profileButton.getScene().getWindow();
+            Scene scene = new Scene(loader.load(), stage.getWidth(), stage.getHeight());
+            stage.setScene(scene);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

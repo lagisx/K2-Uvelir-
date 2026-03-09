@@ -28,18 +28,20 @@
                 
                 <VBox spacing="25" maxWidth="700" styleClass="card">
 
-                    <!-- Аватар и имя пользователя -->
-                    <VBox alignment="CENTER" spacing="15">
-                        <StackPane style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2); -fx-background-radius: 75; -fx-pref-width: 150; -fx-pref-height: 150; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 5);">
+                    <!-- Заголовок профиля -->
+                    <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 0 0 10 0;">
+                        <StackPane style="-fx-background-color: #4a5fd8; -fx-background-radius: 40; -fx-min-width: 64; -fx-min-height: 64; -fx-max-width: 64; -fx-max-height: 64;">
                             <Label fx:id="avatarLabel" 
                                    text="👤" 
-                                   style="-fx-font-size: 72px; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                                   style="-fx-font-size: 28px; -fx-text-fill: white; -fx-font-weight: bold;"/>
                         </StackPane>
-                        <Label fx:id="userNameDisplay" 
-                               text="Имя пользователя"
-                               styleClass="label-title"
-                               style="-fx-font-size: 28px;"/>
-                    </VBox>
+                        <VBox spacing="4">
+                            <Label fx:id="userNameDisplay" 
+                                   text="Имя пользователя"
+                                   style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #222;"/>
+                            <Label text="Личный кабинет" style="-fx-font-size: 13px; -fx-text-fill: #888;"/>
+                        </VBox>
+                    </HBox>
 
                     <Separator styleClass="separator-line"/>
 

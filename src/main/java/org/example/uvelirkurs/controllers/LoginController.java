@@ -33,6 +33,12 @@ public class LoginController {
         if (success) {
             JSONObject user = SupabaseService.getCurrentUserByEmail(email);
             if (user != null) {
+
+                if (!user.optBoolean("is_active", true)) {
+                    showError("Ваш аккаунт заблокирован. Обратитесь к администратору.");
+                    return;
+                }
+
                 SessionManager.login(user);
 
                 String role = user.optString("role", "CLIENT");

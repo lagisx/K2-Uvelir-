@@ -17,7 +17,7 @@ public class SupabaseService {
     private static final String SUPABASE_URL = "https://ainxqbtyeqiwsmtgjfud.supabase.co";
     private static final String API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpbnhxYnR5ZXFpd3NtdGdqZnVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwNDc1NzgsImV4cCI6MjA4NTYyMzU3OH0.bfWoSDHGR_nDPqzhoJsYUWjiqGO25GH_JHGcKhmomNE";
 
-    private static final OkHttpClient client = new OkHttpClient();
+    protected static final OkHttpClient client = new OkHttpClient();
 
     public static boolean registerUser(String email, String password, String fullname, String phone) {
         try {

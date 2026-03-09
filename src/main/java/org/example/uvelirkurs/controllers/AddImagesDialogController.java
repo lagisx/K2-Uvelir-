@@ -26,7 +26,7 @@ public class AddImagesDialogController {
     @FXML private Label productIdLabel;
     @FXML private VBox dropZone;
     @FXML private Button browseButton;
-    @FXML private FlowPane imagePreviewContainer;
+    @FXML private HBox imagePreviewContainer;
     @FXML private Label emptyPreviewLabel;
     @FXML private VBox filesListContainer;
     @FXML private Label emptyFilesLabel;
@@ -169,47 +169,50 @@ public class AddImagesDialogController {
 
     private void addImagePreview(File file) {
         try {
-            VBox previewBox = new VBox(5);
+            VBox previewBox = new VBox(4);
             previewBox.setAlignment(Pos.CENTER);
             previewBox.setStyle(
-                    "-fx-background-color: white; " +
-                            "-fx-border-color: #e0e0e0; " +
-                            "-fx-border-width: 2; " +
-                            "-fx-border-radius: 8; " +
-                            "-fx-background-radius: 8; " +
-                            "-fx-padding: 8; " +
-                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);"
+                    "-fx-background-color: white;" +
+                    "-fx-border-color: #e0e0e0;" +
+                    "-fx-border-width: 1;" +
+                    "-fx-border-radius: 8;" +
+                    "-fx-background-radius: 8;" +
+                    "-fx-padding: 8;" +
+                    "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 4, 0, 0, 2);"
             );
-            previewBox.setPrefWidth(120);
-            previewBox.setPrefHeight(140);
+            previewBox.setPrefWidth(150);
+            previewBox.setMinWidth(150);
+            previewBox.setMaxWidth(150);
+            previewBox.setPrefHeight(168);
+            previewBox.setMinHeight(168);
 
-            Image image = new Image(file.toURI().toString(), 100, 100, true, true);
+            Image image = new Image(file.toURI().toString(), 130, 120, true, true);
             ImageView imageView = new ImageView(image);
-            imageView.setFitWidth(100);
-            imageView.setFitHeight(100);
+            imageView.setFitWidth(130);
+            imageView.setFitHeight(120);
             imageView.setPreserveRatio(true);
-            imageView.setStyle("-fx-border-radius: 4;");
+            imageView.setSmooth(true);
 
             String displayName = file.getName();
-            if (displayName.length() > 15) {
-                displayName = displayName.substring(0, 12) + "...";
+            if (displayName.length() > 18) {
+                displayName = displayName.substring(0, 15) + "...";
             }
             Label nameLabel = new Label(displayName);
-            nameLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #666666;");
-            nameLabel.setMaxWidth(100);
+            nameLabel.setStyle("-fx-font-size: 10px; -fx-text-fill: #555;");
+            nameLabel.setMaxWidth(145);
 
             Button removeBtn = new Button("✕");
             removeBtn.setStyle(
-                    "-fx-background-color: #e74c3c; " +
-                            "-fx-text-fill: white; " +
-                            "-fx-font-size: 10px; " +
-                            "-fx-font-weight: bold; " +
-                            "-fx-cursor: hand; " +
-                            "-fx-background-radius: 50%; " +
-                            "-fx-min-width: 20px; " +
-                            "-fx-min-height: 20px; " +
-                            "-fx-max-width: 20px; " +
-                            "-fx-max-height: 20px;"
+                    "-fx-background-color: #fee2e2;" +
+                    "-fx-text-fill: #dc2626;" +
+                    "-fx-font-size: 9px;" +
+                    "-fx-font-weight: bold;" +
+                    "-fx-cursor: hand;" +
+                    "-fx-background-radius: 50%;" +
+                    "-fx-min-width: 20px;" +
+                    "-fx-min-height: 20px;" +
+                    "-fx-max-width: 20px;" +
+                    "-fx-max-height: 20px;"
             );
             removeBtn.setOnAction(e -> {
                 selectedFiles.remove(file);
@@ -225,39 +228,59 @@ public class AddImagesDialogController {
             imagePreviewContainer.getChildren().add(previewBox);
 
         } catch (Exception e) {
-            System.err.println("Ошибка создания превью для " + file.getName() + ": " + e.getMessage());
+            System.err.println("Ошибка превью: " + file.getName() + " — " + e.getMessage());
         }
     }
 
     private void addFileToList(File file) {
-        HBox fileItem = new HBox(10);
-        fileItem.setStyle("-fx-background-color: #f5f5f5; -fx-padding: 10; -fx-background-radius: 6;");
+        HBox fileItem = new HBox(12);
+        fileItem.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        fileItem.setMinHeight(42);
+        fileItem.setPrefHeight(42);
+        fileItem.setStyle(
+                "-fx-background-color: #f8f9ff;" +
+                "-fx-padding: 8 12;" +
+                "-fx-background-radius: 8;" +
+                "-fx-border-color: #e5e7ff;" +
+                "-fx-border-width: 1;" +
+                "-fx-border-radius: 8;"
+        );
         fileItem.setUserData(file);
 
-        Label fileIcon = new Label("🖼️");
+        Label fileIcon = new Label("🖼");
         fileIcon.setStyle("-fx-font-size: 20px;");
 
-        VBox fileInfo = new VBox(3);
+        VBox fileInfo = new VBox(2);
+        fileInfo.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         Label fileName = new Label(file.getName());
-        fileName.setStyle("-fx-font-weight: bold; -fx-font-size: 13px;");
+        fileName.setStyle("-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #1a1a2e;");
+        fileName.setMaxWidth(500);
 
-        long sizeKB = file.length() / 1024;
-        Label fileSize = new Label(String.format("%.1f KB", sizeKB / 1024.0));
-        fileSize.setStyle("-fx-font-size: 11px; -fx-text-fill: #666666;");
+        long sizeBytes = file.length();
+        String sizeStr = sizeBytes < 1024 ? sizeBytes + " B"
+                : sizeBytes < 1024 * 1024 ? String.format("%.1f KB", sizeBytes / 1024.0)
+                : String.format("%.2f MB", sizeBytes / (1024.0 * 1024));
+        Label fileSize = new Label(sizeStr);
+        fileSize.setStyle("-fx-font-size: 11px; -fx-text-fill: #888;");
 
         fileInfo.getChildren().addAll(fileName, fileSize);
+        HBox.setHgrow(fileInfo, javafx.scene.layout.Priority.ALWAYS);
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
 
         Button removeButton = new Button("✕");
         removeButton.setStyle(
-                "-fx-background-color: #e74c3c; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-font-weight: bold; " +
-                        "-fx-cursor: hand; " +
-                        "-fx-background-radius: 50%; " +
-                        "-fx-min-width: 25px; " +
-                        "-fx-min-height: 25px; " +
-                        "-fx-max-width: 25px; " +
-                        "-fx-max-height: 25px;"
+                "-fx-background-color: #fee2e2;" +
+                "-fx-text-fill: #dc2626;" +
+                "-fx-font-weight: bold;" +
+                "-fx-cursor: hand;" +
+                "-fx-background-radius: 50%;" +
+                "-fx-min-width: 28px;" +
+                "-fx-min-height: 28px;" +
+                "-fx-max-width: 28px;" +
+                "-fx-max-height: 28px;" +
+                "-fx-font-size: 11px;"
         );
 
         removeButton.setOnAction(e -> {
@@ -270,8 +293,7 @@ public class AddImagesDialogController {
             }
         });
 
-        HBox.setHgrow(fileInfo, javafx.scene.layout.Priority.ALWAYS);
-        fileItem.getChildren().addAll(fileIcon, fileInfo, removeButton);
+        fileItem.getChildren().addAll(fileIcon, fileInfo, spacer, removeButton);
         filesListContainer.getChildren().add(fileItem);
     }
 

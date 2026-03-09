@@ -24,6 +24,11 @@ public class ProductDetailsController {
     @FXML private Label materialLabel;
     @FXML private Label priceLabel;
     @FXML private Label descriptionLabel;
+    @FXML private Label purityLabel;
+    @FXML private Label weightLabel;
+    @FXML private Label sizeLabel;
+    @FXML private Label collectionLabel;
+    @FXML private Label stockLabel;
     @FXML private StackPane imageContainer;
     @FXML private Button prevButton;
     @FXML private Button nextButton;
@@ -45,6 +50,14 @@ public class ProductDetailsController {
         materialLabel.setText(product.optString("material", "-"));
         priceLabel.setText(String.format("%.2f ₽", product.optDouble("price", 0)));
         descriptionLabel.setText(product.optString("description", "Нет описания"));
+        if (purityLabel != null) purityLabel.setText(product.optString("purity", "-"));
+        if (weightLabel != null) {
+            double w = product.optDouble("weight", 0);
+            weightLabel.setText(w > 0 ? w + " г" : "-");
+        }
+        if (sizeLabel != null) sizeLabel.setText(product.optString("size", "-"));
+        if (collectionLabel != null) collectionLabel.setText(product.optString("collection", "-"));
+        if (stockLabel != null) stockLabel.setText(product.optInt("stock_quantity", 0) + " шт.");
 
         loadImages(product.getInt("id"));
     }

@@ -112,6 +112,11 @@ public class CartManager {
         SupabaseService.clearCart(userId);
     }
 
+
+    public void clearLocalCart() {
+        cartItems.clear();
+    }
+
     public ObservableList<CartItem> getCartItems() {
         return cartItems;
     }
